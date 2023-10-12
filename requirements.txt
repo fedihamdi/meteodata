@@ -1,0 +1,9 @@
+cdsapi==0.6.1
+geopandas==0.14.0
+numpy==1.26.0
+pandas==2.1.1
+Shapely==2.0.1
+xarray==2023.9.0
+plotly
+matplotlib
+netCDF4
