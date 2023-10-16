@@ -8,6 +8,37 @@ import plotly.graph_objects as go
 import geocoder
 import csv
 
+
+# Define a mapping of column names to display names
+column_mapping = {
+    'time': 'Temps',
+    'temperature': 'Température',
+    'relative_humidity': 'Humidité relative',
+    'chocho_conc': 'Éthanedial',
+    'dust': 'Poussières',
+    'ecres_conc': 'Suie / carbone élémentaire',
+    'hcho_conc': 'formaldéhyde',
+    'no2_conc': 'Dioxyde d\'azote',
+    'nh3_conc': 'Ammoniac',
+    'no_conc': 'monoxyde d\'azote',
+    'nmvoc_conc': 'Composés organiques volatils non méthaniques',
+    'o3_conc': 'Ozone',
+    'co_conc': 'Monoxyde de carbone',
+    'ectot_conc': 'Total de carbon élementaire',
+    'pans_conc': 'Nitrate de peroxyacétyle',
+    'pm10_conc': 'Micro particules < 10 µm',
+    'pm2p5_conc': 'Micro particules < 2.5 µm',
+    'pmwf_conc': 'Display Name 2',
+    'sia_conc': 'Display Name 2',
+    'so2_conc': 'Dioxyde de soufre',
+    'average_pollen_concentration': 'Concentration moyenne pollens',
+    'longitude': 'Longitude',
+    'latitude': 'Latitude',
+}
+
+exclude_columns = ["longitude", "latitude", "time", "average_pollen_c_", "average_pollen_c_1"]
+
+
 def pollen_data_view(request):
     df = None
     filtered_df = None
@@ -15,6 +46,7 @@ def pollen_data_view(request):
     if not cache.get('my_data_key'):
         path = os.path.join(os.getcwd()[:-20], 'data_file_2022-07-10.csv')
         df = pd.read_csv(path)
+        df['temperature'] = round(df['temperature'] - 273.15, 1)
         g = geocoder.ip('me')
         user_latitude, user_longitude = g.latlng
         filtered_df = df[(round(df['latitude']) == round(user_latitude)) & (round(df['longitude']) == round(user_longitude))]
@@ -28,19 +60,53 @@ def pollen_data_view(request):
     # Create the density map
     traces = []
 
+    fig = px.density_mapbox(
+        filtered_df,
+        lat='latitude',
+        lon='longitude',
+        z="average_pollen_c_",
+        hover_name='average_pollen_c_',
+        center=dict(lat=user_latitude, lon=user_longitude),
+        zoom=10,
+        radius=100,
+        opacity=0.7,
+        mapbox_style="dark", title='Pollen breach worldwide',
+    )
+
+    fig.add_trace(go.Scattermapbox(
+        lat=[user_latitude],
+        lon=[user_longitude],
+        mode='markers',
+        marker=go.scattermapbox.Marker(
+            size=14,
+            color='blue',
+        ),
+        name=f'User Location',
+        customdata=[pollen_estimated]
+    ))
+
     # Iterate over the columns of the filtered DataFrame
     for column in filtered_df.columns:
+        if column in exclude_columns:
+            continue
+
+        if column in column_mapping:
+            display_name = column_mapping[column]
+        else:
+            display_name = column  # Use the original column name if not mapped
+
         # Create a scatter plot trace for the current column
         trace = go.Scattermapbox(
             lat=filtered_df['latitude'],
             lon=filtered_df['longitude'],
             mode='markers',
             marker=go.scattermapbox.Marker(
-                size=14,  # You can adjust the size as needed
-                opacity=0.7,  # You can adjust the opacity as needed
+                size=14,
+                opacity=0.7,
             ),
-            name=column,  # Set the trace name to the column name
-            text=filtered_df[column].astype(str),  # Display the column's data as text on hover
+            name=display_name,
+            text=filtered_df[column].astype(str),
+            hoverinfo='text'
         )
 
         traces.append(trace)
@@ -50,7 +116,7 @@ def pollen_data_view(request):
     layout = go.Layout(
         mapbox=dict(
             center=dict(lat=user_latitude, lon=user_longitude),
-            zoom=10.5,
+            zoom=13,
 
         ),
         mapbox_style="open-street-map",
