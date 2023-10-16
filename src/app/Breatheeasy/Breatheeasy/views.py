@@ -109,6 +109,30 @@ def pollen_data_view(request):
             hoverinfo='text'
         )
 
+        custom_color_scale = ['#ff0000','#FFA500','#00ff00']  # Red to green
+
+        trace_min_value = filtered_df[column].min()
+        trace_max_value = filtered_df[column].max()
+        normalized_values = (filtered_df[column] - trace_min_value) / (trace_max_value - trace_min_value)
+        color_indices = [int(val * (len(custom_color_scale) - 1)) for val in normalized_values]
+        marker_colors = [custom_color_scale[idx] for idx in color_indices]
+
+        # Create a scatter plot trace with marker colors
+        trace = go.Scattermapbox(
+            lat=filtered_df['latitude'],
+            lon=filtered_df['longitude'],
+            mode='markers',
+            marker=go.scattermapbox.Marker(
+                size=14,
+                opacity=0.7,
+                color=marker_colors,  # Assign the marker colors here
+                colorbar=dict(title=display_name),
+            ),
+            name=display_name,
+            text=filtered_df[column].astype(str),
+            hoverinfo='text'
+        )
+
         traces.append(trace)
 
     # Update map layout
@@ -135,6 +159,12 @@ def pollen_data_view(request):
 
     # Create the figure with all the traces
     fig = go.Figure(data=traces, layout=layout)
+
+    fig.update_layout(
+        coloraxis_colorbar=dict(
+            x=0.05,  # Adjust the x-coordinate to move the color scale left or right
+        )
+    )
 
     context = {
         'pollen_fig': fig.to_html(),
