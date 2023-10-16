@@ -21,4 +21,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pollen/', views.pollen_data_view, name='pollen_data'),
+    path('filters/', views.filters_form_view, name='checkbox_form_view'),
+    path('plotly-plot/', views.plotly_plot_view, name='plotly_plot_view'),
+
 ]

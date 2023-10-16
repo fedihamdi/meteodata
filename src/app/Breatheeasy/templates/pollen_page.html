@@ -7,6 +7,24 @@
 </head>
 <body>
     <h1>POC Breatheeasy</h1>
-    {{ pollen_fig|safe }}
+
+    <a href="/filters/">Filter</a>
+
+    <div id="pollen_map">
+        {{ pollen_fig|safe }}
+    </div>
 </body>
 </html>
+
+<style>
+    /*delete the plotly toolbar */
+    .modebar{
+      display: none;
+}
+
+    .pollen_map{
+        width: 100%;
+        height: 100%;
+        padding-left: 0;
+    }
+</style>
