@@ -57,33 +57,30 @@ def pollen_data_view(request):
     if df is None or filtered_df is None:
         df = cache.get('my_data_key')
 
-    # Create the density map
+        # Add the map subplot (in the middle)
+        fig.add_trace(px.density_mapbox(
+            filtered_df,
+            lat='latitude',
+            lon='longitude',
+            z="average_pollen_c_",
+            hover_name='average_pollen_c_',
+            center=dict(lat=user_latitude, lon=user_longitude),
+            zoom=10,
+            radius=100,
+            opacity=0.7,
+            mapbox_style="dark",
+            title='Pollen breach worldwide',
+        ).data[0], row=1, col=2)
+
+
+        # Update the layout to make it look nice
+        fig.update_layout(
+            showlegend=False,
+            height=500,  # Set the height of the plot as needed
+        )
+
+
     traces = []
-
-    fig = px.density_mapbox(
-        filtered_df,
-        lat='latitude',
-        lon='longitude',
-        z="average_pollen_c_",
-        hover_name='average_pollen_c_',
-        center=dict(lat=user_latitude, lon=user_longitude),
-        zoom=10,
-        radius=100,
-        opacity=0.7,
-        mapbox_style="dark", title='Pollen breach worldwide',
-    )
-
-    fig.add_trace(go.Scattermapbox(
-        lat=[user_latitude],
-        lon=[user_longitude],
-        mode='markers',
-        marker=go.scattermapbox.Marker(
-            size=14,
-            color='blue',
-        ),
-        name=f'User Location',
-        customdata=[pollen_estimated]
-    ))
 
     # Iterate over the columns of the filtered DataFrame
     for column in filtered_df.columns:
@@ -109,7 +106,8 @@ def pollen_data_view(request):
             hoverinfo='text'
         )
 
-        custom_color_scale = ['#ff0000','#FFA500','#00ff00']  # Red to green
+        custom_color_scale = ['#FF0000', '#FF3300', '#FF6600', '#FF9900', '#FFCC00', '#FFCC33', '#FFCC66', '#FFCC99',
+                              '#FFCCBB', '#99CC00', '#66CC00', '#33CC00']
 
         trace_min_value = filtered_df[column].min()
         trace_max_value = filtered_df[column].max()
@@ -135,17 +133,6 @@ def pollen_data_view(request):
 
         traces.append(trace)
 
-    # Update map layout
-    user_latitude, user_longitude = g.latlng
-    layout = go.Layout(
-        mapbox=dict(
-            center=dict(lat=user_latitude, lon=user_longitude),
-            zoom=13,
-
-        ),
-        mapbox_style="open-street-map",
-    )
-
     # Update map layout with width and height
     layout = go.Layout(
         mapbox=dict(
@@ -157,14 +144,10 @@ def pollen_data_view(request):
         height= 880,
     )
 
+
     # Create the figure with all the traces
     fig = go.Figure(data=traces, layout=layout)
-
-    fig.update_layout(
-        coloraxis_colorbar=dict(
-            x=0.05,  # Adjust the x-coordinate to move the color scale left or right
-        )
-    )
+    fig.update_layout(coloraxis_colorbar=dict(yanchor="top", y=1, x=-1, ticks="outside"))
 
     context = {
         'pollen_fig': fig.to_html(),
