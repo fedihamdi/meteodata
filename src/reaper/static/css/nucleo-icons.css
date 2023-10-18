@@ -595,3 +595,9 @@ License - nucleoapp.com/license/
 
 
 /* all icon font classes list here */
+
+.cbcoloraxis.colorbar {
+  transform-origin: top center;
+  transform-box: fill-box;
+  /* Other CSS styles for your color bar */
+}

@@ -10,6 +10,7 @@ import logging
 
 logger_me = logging.getLogger(__name__)
 logger_me.setLevel(logging.DEBUG)
+token = "pk.eyJ1IjoiZmVkaWhhbWRpIiwiYSI6ImNrOGx2MzIxcTBhdWUzZm9raGdudzF1a2QifQ.E_Ho9zB0bqNqxApIB5n_QQ"
 
 def filter_data_user_position(only_data=False):
     if not cache.get('my_data_key'):
@@ -55,9 +56,9 @@ def pollen_data_view(request):
         zoom=10,
         radius=100,
         opacity=0.7,
-        mapbox_style="dark", title='Pollen breach worldwide',
+        mapbox_style="dark", #title='Pollen breach worldwide',
     )
-
+    fig.update_layout(legend_title="Pollen C° and position")
     fig.add_trace(go.Scattermapbox(
         lat=[user_latitude],
         lon=[user_longitude],
@@ -77,7 +78,7 @@ def pollen_data_view(request):
             size=pollen_estimated * 10,
             opacity=0.2
         ),
-        name=f'Estimation {pollen_estimated}'
+        name=f'Estimation {round(pollen_estimated,2)}'
     ))
 
     fig.update_layout(
@@ -86,16 +87,22 @@ def pollen_data_view(request):
             zoom=9.5
         )
     )
-    fig.update_layout(coloraxis_colorbar=dict(yanchor="top", y=1, x=-0.5, ticks="outside"))
-    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(coloraxis_colorbar=dict(#yanchor="top", xanchor="left",y=1, x=0.5, ticks="outside",
+                                              title='Pollen C°'))
+    #fig.update_coloraxes(colorbar_orientation='h')
+    #fig.update_traces(coloraxis_colorbar=dict(orientation='h', yanchor='bottom', y=1.02), colorscale='Viridis')
+
+    fig.update_layout(mapbox=dict(style="satellite-streets", accesstoken=token))
     context2 = {
-        'pollen_fig': fig.to_json(),
+        'pollen_fig': fig.to_json(engine="json"),
+        'data_snap': data_snapshot(filtered_df, "average_pollen_concentration"),
     }
     context2.update(estimation_data_view())
     return render(request, 'pages/index.html', context2)
 
 
-
+def data_snapshot(dataframe, column):
+    return dataframe[column].values.tolist()[:7]
 def index(request):
     # page from the them
     return render(request, 'pages/index.html')

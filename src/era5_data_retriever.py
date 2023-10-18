@@ -3,11 +3,55 @@ import xarray as xr
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
+from datetime import datetime, timedelta
+import os
+from cams_data_retrieval import is_valid_date_format
+import logging
+from dotenv import load_dotenv
 
+load_dotenv()
+logger = logging.getLogger(__name__)
+
+def extract_date_components(start_date, end_date):
+    # TODO: use the is_valid_date_format pour la prochaine iteration/opti du code
+    # TODO: il faut trouver une solution pour ne pas charecher des dates qui non pas de sens
+    start_date_obj = datetime.strptime(start_date, '%Y-%m-%d %H:%M:%S')
+    end_date_obj = datetime.strptime(end_date, '%Y-%m-%d %H:%M:%S')
+
+    years = []
+    months = []
+    days = []
+
+    current_date = start_date_obj
+    while current_date <= end_date_obj:
+        year_str = str(current_date.year)
+        month_str = str(current_date.month).zfill(2)
+        day_str = str(current_date.day).zfill(2)
+
+        if year_str not in years:
+            years.append(year_str)
+        if month_str not in months:
+            months.append(month_str)
+        if day_str not in days:
+            days.append(day_str)
+
+        current_date += timedelta(days=1)
+
+    return years, months, days
 class ERA5DataRetriever:
     def __init__(self, variables=['temperature', 'total_precipitation', 'relative_humidity'],
-                 year=2008, month="01", day="01",time="12:00"):
-        self.c = cdsapi.Client()
+                 year=None, month=None, day=None, time="12:00", start_date=None, end_date=None):
+        ERA5_URL = os.environ.get("CDSAPI_URL_ERA5")  # env vars pour la cnx API CAMS
+        ERA5_KEY = os.environ.get("CDSAPI_KEY_ERA5")
+        if year is None or month is None or day is None:
+            if start_date is not None and end_date is not None:
+                year, month, day = extract_date_components(start_date, end_date)
+            else:
+                # peut etre mettre des loggers au cas ou ca tourne mal
+                raise ValueError("Either provide 'year', 'month', and 'day', or 'start_date' and 'end_date'")
+        logger.warning(f"You are now looking for data {year} {month} {day}")
+
+        self.c = cdsapi.Client(url=ERA5_URL, key=ERA5_KEY)
         self.variables = variables
         self.pressure_level = "1000"
         self.product_type = "reanalysis"
@@ -17,7 +61,13 @@ class ERA5DataRetriever:
         self.time = time
         self.format = "netcdf"
 
-    def retrieve_data(self, variable_list, output_filename):
+    def retrieve_data(self, variable_list=None, output_filename="file_.nc", database="reanalysis-era5-pressure-levels"):
+        if variable_list is None:
+            variable_list = self.variables
+        lis = ["reanalysis-era5-pressure-levels", "reanalysis-era5-single-levels"]
+        if database not in lis:
+            raise ValueError(f"Type must be {lis}")
+
         request_params = {
             "variable": variable_list,
             "pressure_level": self.pressure_level,
@@ -28,7 +78,7 @@ class ERA5DataRetriever:
             "time": self.time,
             "format": self.format,
         }
-        self.c.retrieve("reanalysis-era5-pressure-levels", request_params, output_filename)
+        self.c.retrieve(database, request_params, output_filename)
 
     def open_dataset(self, filename):
         return xr.open_dataset(filename)

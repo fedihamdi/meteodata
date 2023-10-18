@@ -91,18 +91,17 @@
               </div>
               <div class="text-end pt-1">
                 <p class="text-sm mb-0 text-capitalize">My map</p>
-
-                <div id="map-chart"></div>
-
-
               </div>
+
+
+
+
+
             </div>
             <hr class="dark horizontal my-0">
-            <div class="card-footer p-3">
-              <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than yesterday</p>
-            </div>
-          </div>
 
+          </div>
+<div id="map-chart"></div>
 
 
         </div>
@@ -523,19 +522,20 @@
   {% block scripts %}
   <script>
     var ctx = document.getElementById("chart-bars").getContext("2d");
+    var snapData = JSON.parse('{{ data_snap|escapejs }}');
 
     new Chart(ctx, {
       type: "bar",
       data: {
         labels: ["M", "T", "W", "T", "F", "S", "S"],
         datasets: [{
-          label: "Sales",
+          label: "Pollen concentration",
           tension: 0.4,
           borderWidth: 0,
           borderRadius: 4,
           borderSkipped: false,
           backgroundColor: "rgba(255, 255, 255, .8)",
-          data: [50, 20, 10, 22, 50, 10, 40],
+          data: snapData,
           maxBarThickness: 6
         }, ],
       },
@@ -775,7 +775,17 @@
 
                 <script type="text/javascript">
                   var chartData = JSON.parse('{{ pollen_fig|escapejs }}');
-                  Plotly.newPlot('map-chart', chartData);
+                  var config = {responsive: true, displayModeBar: false, modeBarButtonsToRemove: ['toImage']};
+                  var layout = {showlegend: true};
+                  Plotly.newPlot('map-chart', chartData, layout,config);
                 </script>
+ <script>
+   var element = document.querySelector('.cbcoloraxis.colorbar');
+   element.style.transform = 'rotate(90deg)';
+   element.style.transformBox = 'fill-box';
+   var childElements = document.querySelector('.cbtitle');
+   childElements.style.transform = 'rotate(0deg)';
+   childElements.style.transformBox = 'fill-box';
+ </script>
 
   {% endblock scripts %}
