@@ -2,8 +2,8 @@ import xarray as xr
 import pandas as pd
 import numpy as np
 import os
-from src.era5_data_retriever import ERA5DataRetriever
-from src.cams_data_retrieval import CAMSDataRetriever
+from era5_data_retriever import ERA5DataRetriever
+from cams_data_retrieval import CAMSDataRetriever
 from datetime import datetime
 
 class DataProcessingJob:
@@ -92,8 +92,8 @@ class DataProcessingJob:
         df_all_pol.to_csv(f"data_file_{self.start_date[:10]}.csv", index=False)
 
 if __name__ == "__main__":
-    start_date = '2022-07-10 00:00:00'
-    end_date = '2022-07-11 00:00:00'
+    start_date = '2022-07-11 00:00:00'
+    end_date = '2022-07-12 00:00:00'
     path_to_data = os.getcwd()
 
     job = DataProcessingJob(start_date, end_date, path_to_data)

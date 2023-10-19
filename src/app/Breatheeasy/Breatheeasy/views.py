@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.cache import cache
 import pandas as pd
@@ -8,6 +9,7 @@ import plotly.graph_objects as go
 import geocoder
 import csv
 
+from src.app.Breatheeasy.app.forms import UserProfileForm
 
 # Define a mapping of column names to display names
 column_mapping = {
@@ -216,3 +218,20 @@ def plotly_plot_view(request):
 
 
     return render(request, 'plotly_plot.html', {'plotly_plot_html': plotly_plot_html})
+
+
+
+# Create your views here.
+
+def user_profile_create(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('success_page')  # Replace 'success_page' with your success page URL
+    else:
+        form = UserProfileForm()
+
+    return render(request, 'user_profile_form.html', {'form': form})
