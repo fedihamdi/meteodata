@@ -1,61 +1,100 @@
 import os
-import glob
 import xarray as xr
 import pandas as pd
 from era5_data_retriever import ERA5DataRetriever
+from azure.storage.blob import BlobServiceClient, BlobClient
+import time
+import logging
+from dotenv import load_dotenv
 
+load_dotenv()
+logger = logging.getLogger(__name__)
+
+connectionString = os.environ.get('BLOB_CONNECTION_STRING')
+containerName = "output"
+outputDirectory = "temp"  # Directory to store downloaded .nc files
 
 class DataProcessingJob:
-    def __init__(self, start_date, end_date, path_to_data):
+    def __init__(self, start_date, end_date):
         self.start_date = start_date
         self.end_date = end_date
-        self.path_to_data = path_to_data
         self.client = ERA5DataRetriever(start_date=start_date, end_date=end_date)
+        self.blob_service_client = BlobServiceClient.from_connection_string(connectionString)
+        self.container_client = self.blob_service_client.get_container_client(containerName)
+        self.output_directory = outputDirectory
 
     def normalize_coords(self, df, column):
         df[column] = ((df[column] + 180) % 360) - 180
         return df[column]
 
-    def open_dataset(self, file_path):
-        with xr.open_dataset(file_path, engine="netcdf4", chunks={"time": 1}) as data:
-            df = data.to_dataframe().reset_index()
-        return df
+    def open_blob_as_dataset(self, blob_name):
+        with BlobClient.from_connection_string(conn_str=connectionString, container_name=containerName,
+                                               blob_name=blob_name) as blob_client:
+            download_stream = blob_client.download_blob()
+            content = download_stream.readall()
+
+            if not os.path.exists(outputDirectory):
+                os.makedirs(outputDirectory)
+
+            blob_path = os.path.join(outputDirectory, blob_name)
+            with open(blob_path, "wb") as file:
+                file.write(content)
+
+            dataset = None
+            while dataset is None:
+                try:
+                    logger.warning("reading started")
+                    dataset = xr.open_dataset(blob_path, engine='netcdf4')
+                    logger.warning("reading completed")
+                except PermissionError:
+                    logger.warning("Failed loading the data due to size issue")
+                    time.sleep(5)
+
+            time.sleep(5)
+            dataset.close()
+            pandas_df = dataset.to_dataframe().reset_index()
+            os.remove(blob_path)
+
+        return pandas_df
 
     def load_data(self):
-        nc_files = glob.glob(os.path.join(self.path_to_data, "*.nc"))
         df_air_quality = df_temp_humid = df_precip = df_pollen = None
 
-        for file in nc_files:
-            if "era5_data_temp_humidity_" in file:
-                df_temp_humid = self.open_dataset(file)
-            elif "era5_data_precip_" in file:
-                df_precip = self.open_dataset(file)
-            elif "cams_data_air_quality_" in file:
-                df_air_quality = self.open_dataset(file)
-            elif "cams_data_pollen_" in file:
-                df_pollen = self.open_dataset(file)
+        for blob in self.container_client.list_blobs():
+            if "era5_data_temp_humidity_" in blob.name:
+                df_temp_humid = self.open_blob_as_dataset(blob.name)
+                logger.warning("Reading df_temp_humid is done")
+            elif "era5_data_precip_" in blob.name:
+                df_precip = self.open_blob_as_dataset(blob.name)
+                logger.warning("Reading df_precip is done")
+            elif "cams_data_air_quality_" in blob.name:
+                df_air_quality = self.open_blob_as_dataset(blob.name)
+                logger.warning("Reading df_air_quality is done")
+            elif "cams_data_pollen_" in blob.name:
+                df_pollen = self.open_blob_as_dataset(blob.name)
+                logger.warning("Reading df_pollen is done")
 
         if df_air_quality is not None:
             df_air_quality["time"] = pd.Timestamp(self.start_date).normalize() + df_air_quality["time"]
             df_air_quality["longitude"] = self.normalize_coords(df_air_quality, "longitude")
             df_air_quality["latitude"] = self.normalize_coords(df_air_quality, "latitude")
-            df_air_quality = df_air_quality.loc[df_air_quality.time.between(self.start_date, self.end_date),]
+            df_air_quality = df_air_quality.loc[df_air_quality.time.between(self.start_date, self.end_date), ]
 
         if df_temp_humid is not None:
             df_temp_humid["longitude"] = self.normalize_coords(df_temp_humid, "longitude")
             df_temp_humid["latitude"] = self.normalize_coords(df_temp_humid, "latitude")
-            df_temp_humid = df_temp_humid.loc[df_temp_humid.time.between(self.start_date, self.end_date),]
+            df_temp_humid = df_temp_humid.loc[df_temp_humid.time.between(self.start_date, self.end_date), ]
 
         if df_precip is not None:
             df_precip["longitude"] = self.normalize_coords(df_precip, "longitude")
             df_precip["latitude"] = self.normalize_coords(df_precip, "latitude")
-            df_precip = df_precip.loc[df_precip.time.between(self.start_date, self.end_date),]
+            df_precip = df_precip.loc[df_precip.time.between(self.start_date, self.end_date), ]
 
         if df_pollen is not None:
             df_pollen["time"] = pd.Timestamp(self.start_date).normalize() + df_pollen["time"]
             df_pollen["longitude"] = self.normalize_coords(df_pollen, "longitude")
             df_pollen["latitude"] = self.normalize_coords(df_pollen, "latitude")
-            df_pollen = df_pollen.loc[df_pollen.time.between(self.start_date, self.end_date),]
+            df_pollen = df_pollen.loc[df_pollen.time.between(self.start_date, self.end_date), ]
 
         return df_air_quality, df_temp_humid, df_precip, df_pollen
 
@@ -114,14 +153,23 @@ class DataProcessingJob:
         df_all_pol = df_all_pol[cols]
         df_all_pol = df_all_pol.rename(columns={'time_left': 'time'})
 
-        df_all_pol.to_parquet(f"data_file_{self.start_date[:10]}.parquet", index=False)
+        # Save the processed data to Parquet
+        output_filename = f"data_file_{self.start_date[:10]}.parquet"
+        output_path = os.path.join(self.output_directory, output_filename)
+        df_all_pol.to_parquet(output_path, index=False)
+
+        # Upload the processed data to Azure Blob Storage
+        output_blob_name = f"data/{output_filename}"
+        blob = BlobClient.from_connection_string(conn_str=connectionString, container_name=containerName, blob_name=output_blob_name)
+        with open(output_path, "rb") as data:
+            blob.upload_blob(data, overwrite=True)
+
         del df_all_pol
 
 
 if __name__ == "__main__":
     start_date = '2022-07-10 00:00:00'
     end_date = '2022-07-11 00:00:00'
-    path_to_data = os.path.join(os.getcwd(), "data_nc")
 
-    job = DataProcessingJob(start_date, end_date, path_to_data)
+    job = DataProcessingJob(start_date, end_date)
     job.run()
