@@ -29,5 +29,5 @@ jobs:
           CDSAPI_URL: ${{ secrets.CDSAPI_URL }}
           CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
         run: |
-          python pip install pytest
+          pip install pytest
           pytest
