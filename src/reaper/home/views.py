@@ -1,12 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-import pandas as pd
-from django.core.cache import cache
+import logging
 import os
+
+import geocoder
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import geocoder
-import logging
+from django.core.cache import cache
+from django.shortcuts import render
 
 logger_me = logging.getLogger(__name__)
 logger_me.setLevel(logging.DEBUG)
@@ -17,7 +17,7 @@ def filter_data_user_position(only_data=False):
     if not cache.get("my_data_key"):
         path = os.path.join(os.getcwd()[:-10], "data_file_2022-07-10.csv")
         df = pd.read_csv(path)
-        g = geocoder.ip("me")
+        geocoder.ip("me")
         # if g.latlng is None :
         user_latitude, user_longitude = [48.8534, 2.4488]
         # else :
@@ -81,7 +81,7 @@ def pollen_data_view(request):
                 size=14,
                 color="blue",
             ),
-            name=f"User Location",
+            name="User Location",
             customdata=[pollen_estimated],
         )
     )

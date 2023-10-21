@@ -7,7 +7,9 @@ import sys
 def main():
     if os.getenv("NGROK_LISTENER_RUNNING") is None:
         os.environ["NGROK_LISTENER_RUNNING"] = "true"
-        import asyncio, multiprocessing, ngrok
+        import asyncio
+
+        import ngrok
 
         async def setup():
             listen = sys.argv[2] if len(sys.argv) > 2 else "localhost:8000"

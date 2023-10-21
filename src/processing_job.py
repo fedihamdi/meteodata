@@ -1,11 +1,13 @@
-import os
-import xarray as xr
-import pandas as pd
-from era5_data_retriever import ERA5DataRetriever
-from azure.storage.blob import BlobServiceClient, BlobClient
-import time
 import logging
+import os
+import time
+
+import pandas as pd
+import xarray as xr
+from azure.storage.blob import BlobClient, BlobServiceClient
 from dotenv import load_dotenv
+
+from era5_data_retriever import ERA5DataRetriever
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -192,7 +194,7 @@ class DataProcessingJob:
             :, df_pollen.columns.isin(exclude_columns)
         ].mean(axis=1)
         df_pollen["average_pollen_c_"] = df_pollen.average_pollen_concentration.apply(
-            lambda x: float("{:.2e}".format(x))
+            lambda x: float(f"{x:.2e}")
         )
 
         df_all_pol = client.merge_dataframes_geometry(

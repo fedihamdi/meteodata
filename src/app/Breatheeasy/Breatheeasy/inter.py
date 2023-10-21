@@ -1,8 +1,9 @@
 import logging
-from django.core.cache import cache
-import pandas as pd
 import os
+
 import geocoder
+import pandas as pd
+from django.core.cache import cache
 
 logger_me = logging.getLogger(__name__)
 logger_me.setLevel(logging.DEBUG)
@@ -26,7 +27,6 @@ def filter_data_user_position(ony_data=False):
     if df is None or filtered_df is None:
         df = cache.get("my_data_key")
     if ony_data:
-
         try:
             return [filtered_df, user_latitude, user_longitude]
         except:

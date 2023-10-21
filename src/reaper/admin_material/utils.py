@@ -1,12 +1,18 @@
-# -*- encoding: utf-8 -*-
 """
 Copyright (c) 2019 - present AppSeed.us
 """
 
-import datetime
 import json
+import logging
+
+from django.contrib import admin, messages
+from django.contrib.admin import AdminSite
+from django.contrib.admin.options import IncorrectLookupParameters
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import HttpResponse
 from django.template import Context
 from django.utils import translation
+from django.utils.text import capfirst, slugify
 
 try:
     from django.apps.registry import apps
@@ -15,20 +21,12 @@ except ImportError:
         from django.apps import apps  # Fix Django 1.7 import issue
     except ImportError:
         pass
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
 
 try:
-    from django.core.urlresolvers import reverse, resolve, NoReverseMatch
+    from django.core.urlresolvers import NoReverseMatch, resolve, reverse
 except ImportError:  # Django 1.11
-    from django.urls import reverse, resolve, NoReverseMatch
+    from django.urls import NoReverseMatch, resolve, reverse
 
-from django.contrib.admin import AdminSite
-from django.utils.text import capfirst
-from django.contrib import messages
-from django.contrib.admin.options import IncorrectLookupParameters
-from django.contrib import admin
-from django.utils.text import slugify
 
 try:
     from django.utils.translation import ugettext_lazy as _
@@ -42,6 +40,8 @@ except ImportError:
 
 
 default_apps_icon = {"auth": "fa fa-users"}
+
+logger = logging.getLogger(__name__)
 
 
 class JsonResponse(HttpResponse):
@@ -64,7 +64,7 @@ class JsonResponse(HttpResponse):
             )
         kwargs.setdefault("content_type", "application/json")
         data = json.dumps(data, cls=encoder)
-        super(JsonResponse, self).__init__(content=data, **kwargs)
+        super().__init__(content=data, **kwargs)
 
 
 def get_app_list(context, order=True):
@@ -73,7 +73,6 @@ def get_app_list(context, order=True):
 
     app_dict = {}
     for model, model_admin in admin_site._registry.items():
-
         app_icon = (
             model._meta.app_config.icon
             if hasattr(model._meta.app_config, "icon")
@@ -165,8 +164,8 @@ def get_admin_site(context):
         for func_closure in index_resolver.func.__closure__:
             if isinstance(func_closure.cell_contents, AdminSite):
                 return func_closure.cell_contents
-    except:
-        pass
+    except Exception as e:
+        logger.warning(f"An eroor occured due to admin.site {e}")
 
     return admin.site
 
@@ -175,7 +174,7 @@ def get_admin_site_name(context):
     return get_admin_site(context).name
 
 
-class SuccessMessageMixin(object):
+class SuccessMessageMixin:
     """
     Adds a success message on successful form submission.
     """
@@ -183,7 +182,7 @@ class SuccessMessageMixin(object):
     success_message = ""
 
     def form_valid(self, form):
-        response = super(SuccessMessageMixin, self).form_valid(form)
+        response = super().form_valid(form)
         success_message = self.get_success_message(form.cleaned_data)
         if success_message:
             messages.success(self.request, success_message)
@@ -281,7 +280,7 @@ def get_possible_language_codes():
     split = language_code.split("-", 2)
     if len(split) == 2:
         language_code = (
-            "%s-%s" % (split[0].lower(), split[1].upper())
+            f"{split[0].lower()}-{split[1].upper()}"
             if split[0] != split[1]
             else split[0]
         )

@@ -1,24 +1,24 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.views import (
-    LoginView,
-    PasswordResetView,
-    PasswordChangeView,
-    PasswordResetConfirmView,
-)
 from admin_material.forms import (
-    RegistrationForm,
     LoginForm,
+    RegistrationForm,
+    UserPasswordChangeForm,
     UserPasswordResetForm,
     UserSetPasswordForm,
-    UserPasswordChangeForm,
 )
 from django.contrib.auth import logout
+from django.contrib.auth.views import (
+    LoginView,
+    PasswordChangeView,
+    PasswordResetConfirmView,
+    PasswordResetView,
+)
+from django.shortcuts import redirect, render
 
 # Create your views here.
 
+
 # Pages
 def index(request):
-
     return render(request, "pages/index.html", {"segment": "index"})
 
 

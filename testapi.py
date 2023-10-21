@@ -1,6 +1,6 @@
 import cdsapi
-import xarray as xr
 import pandas
+import xarray as xr
 
 c = cdsapi.Client()
 variables_ = ["temperature", "total_precipitation", "relative humidity"]

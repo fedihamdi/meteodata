@@ -1,9 +1,10 @@
-import cdsapi
-import xarray as xr
+import logging
 import os
 import re
 from datetime import datetime
-import logging
+
+import cdsapi
+import xarray as xr
 from dotenv import load_dotenv  # only secure en dev à supprimer en prod
 
 load_dotenv()  # idem pour supprimer
@@ -143,4 +144,5 @@ class CAMSDataRetriever:
                 variable_descriptions[var_name] = data[var_name].attrs["long_name"]
             except KeyError as e:
                 variable_descriptions[var_name] = data[var_name].attrs["species"]
+                logger.warning(f"Got this error {e}")
         return variable_descriptions

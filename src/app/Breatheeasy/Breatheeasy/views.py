@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django import forms
-from django.core.cache import cache
-import pandas as pd
+import logging
 import os
+
+import geocoder
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import geocoder
-import logging
+from django import forms
+from django.core.cache import cache
+from django.http import HttpResponse
+from django.shortcuts import render
+
 from .forms import PollenUserLog
 
 logger_me = logging.getLogger(__name__)
@@ -32,7 +34,6 @@ def filter_data_user_position(only_data=False):
     if df is None or filtered_df is None:
         df = cache.get("my_data_key")
     if only_data:
-
         try:
             return [filtered_df, user_latitude, user_longitude, pollen_estimated]
         except:
@@ -46,7 +47,6 @@ def filter_data_user_position(only_data=False):
 
 
 def columns_data_view():
-
     data = filter_data_user_position(only_data=False).head(3)
 
     try:
@@ -60,7 +60,6 @@ def columns_data_view():
 
 
 def pollen_data_view(request):
-
     try:
         filtered_df = pd.DataFrame()
         (

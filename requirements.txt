@@ -19,3 +19,6 @@ Shapely==2.0.2
 streamlit==1.27.2
 xarray==2023.9.0
 netCDF4
+pre-commit==3.5.0
+flake8
+black

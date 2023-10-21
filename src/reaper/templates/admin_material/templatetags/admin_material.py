@@ -1,13 +1,13 @@
-# -*- encoding: utf-8 -*-
 """
 Copyright (c) 2019 - present AppSeed.us
 """
 import re
-from django import template
-from django.utils.html import format_html
+
 from admin_material.utils import get_menu_items
-from django.utils.safestring import mark_safe
+from django import template
 from django.contrib.admin.views.main import PAGE_VAR
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 assignment_tag = (
