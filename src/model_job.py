@@ -10,6 +10,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 import joblib
 from sklearn.preprocessing import StandardScaler
 
+
 class PollenPredictionJob:
     def __init__(self, data_file, start_date, end_date):
         self.data_file = data_file
@@ -24,25 +25,53 @@ class PollenPredictionJob:
         print(df.head(3))
         print(df.describe())
 
-        numeric_vars = ['temperature', 'relative_humidity', 'co_conc', 'o3_conc', 'dust', 'pm10_conc']
+        numeric_vars = [
+            "temperature",
+            "relative_humidity",
+            "co_conc",
+            "o3_conc",
+            "dust",
+            "pm10_conc",
+        ]
         df[numeric_vars].hist(bins=20, figsize=(12, 8))
         plt.show()
 
-        sns.boxplot(data=df[numeric_vars], orient='h')
+        sns.boxplot(data=df[numeric_vars], orient="h")
         plt.show()
 
         plt.figure(figsize=(18, 9))
-        correlation_matrix = df.loc[:, ~df.columns.isin(['time'])].corr()
-        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+        correlation_matrix = df.loc[:, ~df.columns.isin(["time"])].corr()
+        sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm")
         plt.show()
 
     def preprocess_data(self, df):
-        X = df[['temperature', 'relative_humidity', 'chocho_conc', 'co_conc',
-                'dust', 'ecres_conc', 'ectot_conc', 'hcho_conc', 'nh3_conc',
-                'nmvoc_conc', 'no2_conc', 'no_conc', 'o3_conc', 'pans_conc',
-                'pm10_conc', 'pm2p5_conc', 'pmwf_conc', 'sia_conc', 'so2_conc']]
-        y = df['average_pollen_concentration']
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
+        X = df[
+            [
+                "temperature",
+                "relative_humidity",
+                "chocho_conc",
+                "co_conc",
+                "dust",
+                "ecres_conc",
+                "ectot_conc",
+                "hcho_conc",
+                "nh3_conc",
+                "nmvoc_conc",
+                "no2_conc",
+                "no_conc",
+                "o3_conc",
+                "pans_conc",
+                "pm10_conc",
+                "pm2p5_conc",
+                "pmwf_conc",
+                "sia_conc",
+                "so2_conc",
+            ]
+        ]
+        y = df["average_pollen_concentration"]
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=123
+        )
         return X_train, X_test, y_train, y_test
 
     def train_model(self, X_train, y_train):
@@ -74,13 +103,14 @@ class PollenPredictionJob:
         print("Mean Absolute Error:", mae)
         print("Root Mean Squared Error:", rmse)
         X_train_scaled, X_test_scaled = self.center_and_scale(X_train, X_test)
-        model_filename = 'pollen_prediction_model.pkl'
+        model_filename = "pollen_prediction_model.pkl"
         self.save_model(model, model_filename)
 
+
 if __name__ == "__main__":
-    data_file = 'data_file_2022-07-10.csv'
-    start_date = '2022-07-10 00:00:00'
-    end_date = '2022-07-11 00:00:00'
+    data_file = "data_file_2022-07-10.csv"
+    start_date = "2022-07-10 00:00:00"
+    end_date = "2022-07-11 00:00:00"
 
     pollen_job = PollenPredictionJob(data_file, start_date, end_date)
     pollen_job.run()

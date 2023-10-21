@@ -1,5 +1,5 @@
 # meteodata
- 
+
 Project structure is as follow:
 
 > Further documentation will be available in the upcoming days

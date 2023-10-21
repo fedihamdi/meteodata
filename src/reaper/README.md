@@ -9,13 +9,13 @@ The product is designed to deliver the best possible user experience with highly
 
 <br />
 
-> Features: 
+> Features:
 
 - ✅ `Up-to-date Dependencies`
 - ✅ Theme: [Django Admin Material](https://github.com/app-generator/django-admin-material-dashboard), **designed by [Creative-Tim](https://www.creative-tim.com/product/material-dashboard?AFFILIATE=128200)**
   - `can be used in any Django project` (new or legacy)
 - ✅ **Authentication**: `Django.contrib.AUTH`, Registration
-- 🚀 `Deployment` 
+- 🚀 `Deployment`
   - `CI/CD` flow via `Render`
 
 <br />
@@ -24,9 +24,9 @@ The product is designed to deliver the best possible user experience with highly
 
 <br />
 
-## Manual Build 
+## Manual Build
 
-> 👉 Download the code  
+> 👉 Download the code
 
 ```bash
 $ git clone https://github.com/app-generator/django-material-dashboard.git
@@ -35,7 +35,7 @@ $ cd django-material-dashboard
 
 <br />
 
-> 👉 Install modules via `VENV`  
+> 👉 Install modules via `VENV`
 
 ```bash
 $ virtualenv env
@@ -68,7 +68,7 @@ $ python manage.py createsuperuser
 $ python manage.py runserver
 ```
 
-At this point, the app runs at `http://127.0.0.1:8000/`. 
+At this point, the app runs at `http://127.0.0.1:8000/`.
 
 <br />
 
@@ -79,19 +79,19 @@ The project is coded using a simple and intuitive structure presented below:
 ```bash
 < PROJECT ROOT >
    |
-   |-- core/                            
-   |    |-- settings.py                  # Project Configuration  
+   |-- core/
+   |    |-- settings.py                  # Project Configuration
    |    |-- urls.py                      # Project Routing
    |
    |-- home/
-   |    |-- views.py                     # APP Views 
+   |    |-- views.py                     # APP Views
    |    |-- urls.py                      # APP Routing
-   |    |-- models.py                    # APP Models 
-   |    |-- tests.py                     # Tests  
-   |    |-- templates/                   # Theme Customisation 
-   |         |-- includes                # 
-   |              |-- custom-footer.py   # Custom Footer      
-   |     
+   |    |-- models.py                    # APP Models
+   |    |-- tests.py                     # Tests
+   |    |-- templates/                   # Theme Customisation
+   |         |-- includes                #
+   |              |-- custom-footer.py   # Custom Footer
+   |
    |-- requirements.txt                  # Project Dependencies
    |
    |-- env.sample                        # ENV Configuration (default values)
@@ -102,40 +102,40 @@ The project is coded using a simple and intuitive structure presented below:
 
 <br />
 
-## How to Customize 
+## How to Customize
 
-When a template file is loaded, `Django` scans all template directories starting from the ones defined by the user, and returns the first match or an error in case the template is not found. 
-The theme used to style this starter provides the following files: 
+When a template file is loaded, `Django` scans all template directories starting from the ones defined by the user, and returns the first match or an error in case the template is not found.
+The theme used to style this starter provides the following files:
 
 ```bash
 # This exists in ENV: LIB/admin_material
-< UI_LIBRARY_ROOT >                      
+< UI_LIBRARY_ROOT >
    |
-   |-- templates/                     # Root Templates Folder 
-   |    |          
-   |    |-- accounts/       
+   |-- templates/                     # Root Templates Folder
+   |    |
+   |    |-- accounts/
    |    |    |-- login.html           # Sign IN Page
    |    |    |-- register.html        # Sign UP Page
    |    |
-   |    |-- includes/       
+   |    |-- includes/
    |    |    |-- footer.html          # Footer component
    |    |    |-- sidebar.html         # Sidebar component
    |    |    |-- navigation.html      # Navigation Bar
    |    |    |-- scripts.html         # Scripts Component
    |    |
-   |    |-- layouts/       
+   |    |-- layouts/
    |    |    |-- base.html            # Masterpage
    |    |    |-- base-auth.html       # Masterpage for Auth Pages
    |    |
-   |    |-- pages/       
+   |    |-- pages/
    |         |-- index.html           # Dashboard Page
    |         |-- profile.html         # Profile Page
    |         |-- *.html               # All other pages
-   |    
+   |
    |-- ************************************************************************
 ```
 
-When the project requires customization, we need to copy the original file that needs an update (from the virtual environment) and place it in the template folder using the same path. 
+When the project requires customization, we need to copy the original file that needs an update (from the virtual environment) and place it in the template folder using the same path.
 
 > For instance, if we want to **customize the footer.html** these are the steps:
 
@@ -148,34 +148,34 @@ When the project requires customization, we need to copy the original file that 
 
 > To speed up all these steps, the **codebase is already configured** (`Steps 1, and 2`) and a `custom footer` can be found at this location:
 
-`home/templates/includes/custom_footer.html` 
+`home/templates/includes/custom_footer.html`
 
-By default, this file is unused because the `theme` expects `footer.html` (without the `custom-` prefix). 
+By default, this file is unused because the `theme` expects `footer.html` (without the `custom-` prefix).
 
-In order to use it, simply rename it to `footer.html`. Like this, the default version shipped in the library is ignored by Django. 
+In order to use it, simply rename it to `footer.html`. Like this, the default version shipped in the library is ignored by Django.
 
 In a similar way, all other files and components can be customized easily.
 
 <br />
 
-## CSS Styling 
+## CSS Styling
 
-The UI can be customized via the SCSS file. This setup was tested using: 
+The UI can be customized via the SCSS file. This setup was tested using:
 
 - `Node` v16.15.0
-- `Yarn` 1.22.18 
+- `Yarn` 1.22.18
 - `Gulp` CLI version: `2.3.0`, Local version: `4.0.2`
 
 ```bash
 $ cd static
-$ yarn                                       # Install Modules 
+$ yarn                                       # Install Modules
 $ vi scss/material-dashboard/_variables.scss # Edit primary, secondary colors
-$ gulp                                       # Regenerate CSS files   
+$ gulp                                       # Regenerate CSS files
 ```
 
 > NOTE, once the CSS files are successfully regenerated, force a hard refresh in the browser (Shift + F5 in Chrome).
 
-The relevant lines in `_variables.scss` are highlighted below: 
+The relevant lines in `_variables.scss` are highlighted below:
 
 ```SCSS
 // _variables.scss, LINES 56 -> 63
@@ -204,20 +204,20 @@ At this point, the product should be LIVE.
 
 <br />
 
-## [PRO Version](https://appseed.us/product/material-dashboard2-pro/django/)   
+## [PRO Version](https://appseed.us/product/material-dashboard2-pro/django/)
 
 This design is a pixel-perfect [Bootstrap 5](https://www.admin-dashboards.com/bootstrap-5-templates/) Dashboard with a fresh, new design inspired by Google's Material Design. `Material Dashboard 2 PRO` is built with over 300 frontend individual elements, like buttons, inputs, navbars, nav tabs, cards, or alerts, giving you the freedom of choosing and combining.
 
-> Features: 
+> Features:
 
 - ✅ `Up-to-date Dependencies`
 - ✅ `Design`: [Django Theme Material2](https://github.com/app-generator/django-admin-material2-pro) - `PRO Version`
 - ✅ `Sections` covered by the design:
   - ✅ **Admin section** (reserved for superusers)
   - ✅ **Authentication**: `Django.contrib.AUTH`, Registration
-  - ✅ **All Pages** available in for ordinary users 
+  - ✅ **All Pages** available in for ordinary users
 - ✅ `Docker`
-- 🚀 `Deployment` 
+- 🚀 `Deployment`
   - `CI/CD` flow via `Render`
 
 <br />
@@ -227,4 +227,5 @@ This design is a pixel-perfect [Bootstrap 5](https://www.admin-dashboards.com/bo
 <br />
 
 ---
+
 [Django Material Dashboard](https://appseed.us/product/material-dashboard/django/) - Minimal **Django** core provided by **[AppSeed](https://appseed.us/)**
