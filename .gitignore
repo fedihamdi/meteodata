@@ -147,6 +147,9 @@ cython_debug/
 # NetCDF data
 *.nc
 
+# Grib data
+*.grib
+
 # csv and pkl
 *.csv
 *.pkl
