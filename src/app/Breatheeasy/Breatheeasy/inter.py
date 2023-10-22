@@ -29,7 +29,7 @@ def filter_data_user_position(ony_data=False):
     if ony_data:
         try:
             return [filtered_df, user_latitude, user_longitude]
-        except:
+        except BaseException:
             logger_me.info(
                 [filtered_df, user_latitude, user_longitude, pollen_estimated]
             )

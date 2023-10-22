@@ -36,7 +36,7 @@ def filter_data_user_position(only_data=False):
     if only_data:
         try:
             return [filtered_df, user_latitude, user_longitude, pollen_estimated]
-        except:
+        except BaseException:
             logger_me.info(
                 [filtered_df, user_latitude, user_longitude, pollen_estimated]
             )
@@ -55,7 +55,7 @@ def columns_data_view():
             "options": columns_view,
         }
         return columns_view  # render(request, 'pollen_page.html', context)
-    except:
+    except BaseException:
         logger_me.warning("This is failing 3")
 
 

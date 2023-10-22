@@ -87,7 +87,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-        #'LOCATION': 'unique-snowflake',
+        # 'LOCATION': 'unique-snowflake',
     }
 }
 # Password validation
