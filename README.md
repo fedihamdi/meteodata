@@ -1,3 +1,4 @@
+![Docker workflow](https://github.com/fedihamdi/meteodata/actions/workflows/docker-image.yml/badge.svg)
 # meteodata
  
 Project structure is as follow:
