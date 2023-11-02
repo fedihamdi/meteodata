@@ -2,15 +2,23 @@ name: Docker Builds
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Change directory to src/reaper/
+        run: cd src/reaper/
+
       - name: Build the Docker image
-        run: docker build -t my-image-name:$(date +\%s) -f src/reaper/Dockerfile .
+        run: |
+          docker build . --file Dockerfile --tag my-image-name:$(date +%s)
