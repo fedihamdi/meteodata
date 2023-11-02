@@ -1,6 +1,7 @@
 ![Docker workflow](https://github.com/fedihamdi/meteodata/actions/workflows/docker-image.yml/badge.svg)
 ![Quality workflow](https://github.com/fedihamdi/meteodata/actions/workflows/pylint.yml/badge.svg)
 [![Django CI](https://github.com/fedihamdi/meteodata/actions/workflows/django.yml/badge.svg)](https://github.com/fedihamdi/meteodata/actions/workflows/django.yml)
+![Pylint Score](pylint-badge.svg)
 # meteodata
 
 Project structure is as follow:
