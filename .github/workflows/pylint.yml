@@ -76,7 +76,7 @@ jobs:
       - name: Commit and Push Changes
         run: |
           git checkout -b feature/reaper_app_bot
-          # git pull origin feature/reaper_app --no-rebase --allow-unrelated-histories
+          git pull origin feature/reaper_app_bot # --no-rebase --allow-unrelated-histories
           git add pylint-badge.svg
           git commit -m "Add Pylint badge"
           git push origin feature/reaper_app_bot
