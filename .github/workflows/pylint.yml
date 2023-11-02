@@ -55,7 +55,7 @@ jobs:
 
       - name: Extract Pylint score
         id: pylint-score
-        run: echo "::save-state name=score::$(cat pylint_report.txt | | awk -F. '{print $1}')"
+        run: echo "::save-state name=score::$(cat pylint_report.txt | awk -F. '{print $1}')"
 
       - name: Publish score as an artifact
         uses: actions/upload-artifact@v2
