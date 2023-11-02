@@ -77,6 +77,7 @@ jobs:
           git checkout -b feature/reaper_app
           git add pylint-badge.svg
           git commit -m "Add Pylint badge"
+          git pull origin feature/reaper_app
           git push origin feature/reaper_app
 
       - name: Extract Pylint score
