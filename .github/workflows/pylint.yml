@@ -69,6 +69,7 @@ jobs:
       - name: Configure Git
         run: |
           ls -la
+          git branch -a
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
 
