@@ -30,8 +30,7 @@ jobs:
       - name: Analysing the code with pylint
         id: pylint
         run: |
-          pylint --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py')
-          continue-on-error: true
+          pylint --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py') continue-on-error: true
           pylint_score=$(pylint --score y $(git ls-files '*.py') | awk -F '/' '{print $1}' | tr -d '[:space:]')
           echo "Pylint Score: $pylint_score"
           if [ "$pylint_score" -ge 9 ]; then
