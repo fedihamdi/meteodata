@@ -31,7 +31,7 @@ jobs:
         id: pylint
         run: |
           pylint --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py')
-          pylint_score=$(pylint --score y $(git ls-files '*.py') | awk -F '/' '{print $1}' | tr -d '[:space:]')
+          pylint_score=$(pylint --score y $(git ls-files '*.py') | grep -oP '(?<=Your code has been rated at )[^/]+')
           echo "Pylint Score: $pylint_score"
 
       - name: Check Pylint Threshold
