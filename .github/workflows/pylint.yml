@@ -81,6 +81,12 @@ jobs:
           git commit -m "Add Pylint badge"
           git push origin feature/reaper_app_bot
 
+      - name: Create Pull Request
+        run: |
+          gh pr create --base feature/reaper_app --head feature/reaper_app_bot --title "Add Pylint Badge"
+        env:
+          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }
+
       - name: Extract Pylint score
         id: pylint-score
         run: echo "name=score::$(cat pylint_report.txt | grep -oP '(?<=Your code has been rated at )[^/]+')" >> $GITHUB_STATE
