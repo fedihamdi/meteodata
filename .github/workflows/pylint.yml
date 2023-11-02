@@ -72,6 +72,7 @@ jobs:
           git branch -a
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
+          git config --local pull.ff only
 
       - name: Commit and Push Changes
         run: |
