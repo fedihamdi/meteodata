@@ -17,9 +17,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Change directory to src/reaper/
-        run: cd ./src/reaper/
+        run: ls
 
       - name: Build the Docker image
         run: |
-          ls
+          cd ./src/reaper/
           docker build -t my-image-name:$(date +\%s) -f Dockerfile .
