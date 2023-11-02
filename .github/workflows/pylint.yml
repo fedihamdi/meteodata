@@ -84,7 +84,7 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          if ! gh pr list --base feature/reaper_app --head feature/reaper_app_bot | grep -q "No open pull requests found"; then
+          if gh pr list --base feature/reaper_app --head feature/reaper_app_bot | grep -q "No open pull requests found"; then
                 gh pr create --base feature/reaper_app --head feature/reaper_app_bot --title "Add Pylint Badge" --body "Badges"
           fi
         env:
