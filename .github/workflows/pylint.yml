@@ -72,6 +72,7 @@ jobs:
 
           # Download the artifact and save it as pylint-badge.zip
           curl -LJO -H "Accept: application/vnd.github.v3+json" "$url"
+          ls -la
           unzip -q "${artifact_name}" -d "${artifact_name}"
 
           # Move the badge to the desired location in your repository
