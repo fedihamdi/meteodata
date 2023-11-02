@@ -74,10 +74,11 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git checkout -b feature/reaper_app/bot
+          git checkout -b feature/reaper_app
           git add pylint-badge.svg
           git commit -m "Add Pylint badge"
-          git push origin feature/reaper_app/bot
+          git pull origin feature/reaper_app --no-rebase
+          git push origin feature/reaper_app
 
       - name: Extract Pylint score
         id: pylint-score
