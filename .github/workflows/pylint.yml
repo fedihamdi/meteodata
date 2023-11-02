@@ -66,7 +66,7 @@ jobs:
         with:
           name: pylint-artifact
           run: ls -la
-        working-directory: ${{ github.workspace }}
+
       - name: Copy Pylint Badge to Repository Root
         run: |
           mv ${{ github.workspace }}/pylint-badge.svg pylint-badge.svg
