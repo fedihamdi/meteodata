@@ -64,7 +64,7 @@ jobs:
       - name: Download Pylint Badge Artifact
         uses: actions/download-artifact@v2
         with:
-          name: pylint-artifact
+          name: pylint-badge
           run: ls -la
 
       - name: Copy Pylint Badge to Repository Root
