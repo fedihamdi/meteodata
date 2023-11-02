@@ -147,6 +147,9 @@ cython_debug/
 # NetCDF data
 *.nc
 
+# Grib data
+*.grib
+
 # csv and pkl
 *.csv
 *.pkl
@@ -156,3 +159,4 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+notebooks/air_quality_data.db

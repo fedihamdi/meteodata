@@ -1,0 +1,25 @@
+name: Docker Builds
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Change directory to src/reaper/
+        run: ls
+
+      - name: Build the Docker image
+        run: |
+          cd ./src/reaper/
+          docker build -t my-image-name:$(date +\%s) -f Dockerfile .
