@@ -37,6 +37,7 @@ jobs:
       - name: Check Pylint Threshold
         run: |
           pylint_score="${{ steps.pylint.outputs.Pylint_Score }}"
+          pylint_score=$(echo "$pylint_score" | awk -F. '{print $1}')
           if [ "$pylint_score" -ge 9 ]; then
             echo "Pylint score meets the threshold."
           else
@@ -48,6 +49,7 @@ jobs:
         if: success()
         run: |
           pylint_score="${{ steps.pylint.outputs.Pylint_Score }}"
+          pylint_score=$(echo "$pylint_score" | awk -F. '{print $1}')
           curl "https://img.shields.io/badge/Pylint-$pylint_score/10-brightgreen?style=for-the-badge" -o pylint-badge.svg
         working-directory: ${{ github.workspace }}
 
