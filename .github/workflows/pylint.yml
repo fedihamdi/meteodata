@@ -50,3 +50,9 @@ jobs:
           pylint_score="${{ steps.pylint.outputs.pylint_score }}"
           curl "https://img.shields.io/badge/Pylint-$pylint_score/10-brightgreen?style=for-the-badge" -o pylint-badge.svg
         working-directory: ${{ github.workspace }}
+
+      - name: Publish score as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-artifact
+          path: pylint_report.txt
