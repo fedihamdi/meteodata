@@ -31,19 +31,22 @@ jobs:
         id: pylint
         run: |
           pylint --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py')
+          pylint_score=$(pylint --score y $(git ls-files '*.py') | awk -F '/' '{print $1}' | tr -d '[:space:]')
+          echo "Pylint Score: $pylint_score"
 
-      - name: Extract Pylint Report
-        run: echo ::set-output name=pylint_report::$(cat pylint.txt)
-        working-directory: ${{ github.workspace }}
+      - name: Check Pylint Threshold
+        run: |
+          pylint_score="${{ steps.pylint.outputs.pylint_score }}"
+          if [ "$pylint_score" -ge 9 ]; then
+            echo "Pylint score meets the threshold."
+          else
+            echo "Pylint score does not meet the threshold. Skipping badge generation."
+            exit 0
+          fi
 
       - name: Publish Pylint Badge
+        if: success()
         run: |
-          pylint_report="${{ steps.pylint.outputs.pylint_report }}"
-          pylint_score=$(echo "$pylint_report" | awk -F 'has a' '{print $1}' | tr -d '[:space:]')
-
-          if [ ! -z "$pylint_score" ]; then
-            curl "https://img.shields.io/badge/Pylint-$pylint_score/10-brightgreen?style=for-the-badge" -o pylint-badge.svg
-          else
-            echo "Pylint score not found."
-          fi
+          pylint_score="${{ steps.pylint.outputs.pylint_score }}"
+          curl "https://img.shields.io/badge/Pylint-$pylint_score/10-brightgreen?style=for-the-badge" -o pylint-badge.svg
         working-directory: ${{ github.workspace }}
