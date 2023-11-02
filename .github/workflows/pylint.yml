@@ -61,19 +61,15 @@ jobs:
           name: pylint-badge
           path: pylint-badge.svg
 
-      - name: Download Pylint Badge
-        run: |
-          # Define your GitHub repository and the artifact name
-          repo="${{ github.repository }}"
-          artifact_name="pylint-badge"
-
-          # Create the URL to download the artifact
-          url="https://api.github.com/repos/${repo}/actions/artifacts/${artifact_name}/zip"
-
-          # Download the artifact and save it as pylint-badge.zip
-          curl -LJO -H "Accept: application/vnd.github.v3+json" "$url"
-          ls -la
+      - name: Download Pylint Badge Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: pylint-artifact
+          run: ls -la
         working-directory: ${{ github.workspace }}
+      - name: Copy Pylint Badge to Repository Root
+        run: |
+          mv ${{ github.workspace }}/pylint-badge.svg pylint-badge.svg
 
       - name: Extract Pylint score
         id: pylint-score
