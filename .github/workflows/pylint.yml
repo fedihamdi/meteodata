@@ -54,6 +54,30 @@ jobs:
           curl "https://img.shields.io/badge/Pylint-$pylint_score/10-brightgreen?style=for-the-badge" -o pylint-badge.svg
         working-directory: ${{ github.workspace }}
 
+      - name: Upload Pylint Badge as Artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-badge
+          path: pylint-badge.svg
+
+      - name: Download Pylint Badge
+        run: |
+          # Define your GitHub repository and the artifact name
+          repo="${{ github.repository }}"
+          artifact_name="pylint-badge"
+
+          # Create the URL to download the artifact
+          url="https://api.github.com/repos/${repo}/actions/artifacts/${artifact_name}/zip"
+
+          # Download the artifact and save it as pylint-badge.zip
+          curl -LJO -H "Accept: application/vnd.github.v3+json" "$url"
+          unzip -q "${artifact_name}.zip" -d "${artifact_name}"
+
+          # Move the badge to the desired location in your repository
+          mv "${artifact_name}/pylint-badge.svg" "${{ github.workspace }}"
+        working-directory: ${{ github.workspace }}
+
       - name: Extract Pylint score
         id: pylint-score
         run: echo "name=score::$(cat pylint_report.txt | grep -oP '(?<=Your code has been rated at )[^/]+')" >> $GITHUB_STATE
