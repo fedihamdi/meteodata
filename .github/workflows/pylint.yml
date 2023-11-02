@@ -74,6 +74,7 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
+          git branch -a
           git add pylint-badge.svg
           git commit -m "Add Pylint badge"
           git push origin feature/reaper_app
