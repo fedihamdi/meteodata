@@ -65,10 +65,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: pylint-badge
-          run: ls -la
 
       - name: Configure Git
         run: |
+          ls -la
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
 
