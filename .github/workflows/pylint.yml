@@ -67,9 +67,16 @@ jobs:
           name: pylint-badge
           run: ls -la
 
-      - name: Copy Pylint Badge to Repository Root
+      - name: Configure Git
         run: |
-          mv ${{ github.workspace }}/pylint-badge.svg pylint-badge.svg
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Commit and Push Changes
+        run: |
+          git add pylint-badge.svg
+          git commit -m "Add Pylint badge"
+          git push origin feature/reaper_app
 
       - name: Extract Pylint score
         id: pylint-score
