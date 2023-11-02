@@ -85,7 +85,7 @@ jobs:
         run: |
           gh pr create --base feature/reaper_app --head feature/reaper_app_bot --title "Add Pylint Badge"
         env:
-          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }
+          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
 
       - name: Extract Pylint score
         id: pylint-score
