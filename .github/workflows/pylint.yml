@@ -51,7 +51,7 @@ jobs:
         run: |
           pylint_score="${{ steps.pylint.outputs.Pylint_Score }}"
           pylint_score=$(echo "$pylint_score" | awk -F. '{print $1}')
-          curl "https://img.shields.io/badge/Pylint-$pylint_score/10-brightgreen?style=for-the-badge" -o pylint-badge.svg
+          curl "https://img.shields.io/badge/Score-$pylint_score/10-brightgreen" -o pylint-badge.svg
         working-directory: ${{ github.workspace }}
 
       - name: Upload Pylint Badge as Artifact
