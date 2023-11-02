@@ -79,8 +79,12 @@ jobs:
           git checkout -b feature/reaper_app_bot
           # git pull origin feature/reaper_app_bot # --no-rebase --allow-unrelated-histories
           git add pylint-badge.svg
-          git commit -m "Add Pylint badge"
-          git push --force origin feature/reaper_app_bot
+          if [[ -n $(git diff --cached --quiet) ]]; then
+            git commit -m "Add Pylint badge"
+            git push --force origin feature/reaper_app_bot
+          else
+            echo "No changes to commit. Skipping commit and push."
+          fi
 
       - name: Create Pull Request
         run: |
