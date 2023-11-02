@@ -32,7 +32,8 @@ jobs:
         run: |
           pylint --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py')
           pylint_score=$(pylint --score y --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py') | grep -oP '(?<=Your code has been rated at )[^/]+')
-          echo "::set-output name=Pylint_Score::$pylint_score" > pylint_report.txt
+          echo "::set-output name=Pylint_Score::$pylint_score"
+          echo "Your code has been rated at : $pylint_score" > pylint_report.txt
 
       - name: Check Pylint Threshold
         run: |
@@ -55,7 +56,7 @@ jobs:
 
       - name: Extract Pylint score
         id: pylint-score
-        run: echo "::save-state name=score::$(cat pylint_report.txt | awk -F. '{print $1}')"
+        run: echo "name=score::$(cat pylint_report.txt | grep -oP '(?<=Your code has been rated at )[^/]+')" >> $GITHUB_STATE
 
       - name: Publish score as an artifact
         uses: actions/upload-artifact@v2
