@@ -4,7 +4,7 @@
 ![Pylint Score](https://github.com/fedihamdi/meteodata/blob/feature/reaper_app/pylint-badge.svg)
 
 # meteodata
- 
+
 Project structure is as follow:
 
 > Further documentation will be available in the upcoming days

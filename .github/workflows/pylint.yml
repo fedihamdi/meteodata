@@ -1,0 +1,105 @@
+name: Code Quality
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9.18]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint==3.0.1
+
+      - name: Analysing the code with pylint
+        id: pylint
+        run: |
+          pylint --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py')
+          pylint_score=$(pylint --score y --disable R0801,C0114,C0415,R1735,R1705,C0301,C0103,C0116,E0401,C0115,W0718,R1710,W0718,R0903 $(git ls-files '*.py') | grep -oP '(?<=Your code has been rated at )[^/]+')
+          echo "::set-output name=Pylint_Score::$pylint_score"
+          echo "Your code has been rated at : $pylint_score" > pylint_report.txt
+
+      - name: Check Pylint Threshold
+        run: |
+          pylint_score="${{ steps.pylint.outputs.Pylint_Score }}"
+          pylint_score=$(echo "$pylint_score" | awk -F. '{print $0}')
+          if [ "$pylint_score" -ge 9 ]; then
+            echo "Pylint score meets the threshold."
+          else
+            echo "Pylint score does not meet the threshold. Skipping badge generation."
+            exit 0
+          fi
+
+      - name: Publish Pylint Badge
+        if: success()
+        run: |
+          pylint_score="${{ steps.pylint.outputs.Pylint_Score }}"
+          pylint_score=$(echo "$pylint_score" | awk -F. '{print $0}')
+          curl "https://img.shields.io/badge/Score-$pylint_score/10-brightgreen" -o pylint-badge.svg
+        working-directory: ${{ github.workspace }}
+
+      - name: Upload Pylint Badge as Artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-badge
+          path: pylint-badge.svg
+
+      - name: Download Pylint Badge Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: pylint-badge
+
+      - name: Configure Git
+        run: |
+          ls -la
+          git branch -a
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git config --local pull.rebase false
+
+      - name: Commit and Push Changes
+        run: |
+          git checkout -b feature/reaper_app_bot
+          # git pull origin feature/reaper_app_bot # --no-rebase --allow-unrelated-histories
+          git add pylint-badge.svg
+          if [[ -n $(git diff --cached --quiet) ]]; then
+            git commit -m "Add Pylint badge"
+            git push --force origin feature/reaper_app_bot
+          else
+            echo "No changes to commit. Skipping commit and push."
+          fi
+
+      - name: Create Pull Request
+        run: |
+          if gh pr list --base feature/reaper_app --head feature/reaper_app_bot | grep -q "No open pull requests found"; then
+                gh pr create --base feature/reaper_app --head feature/reaper_app_bot --title "Add Pylint Badge" --body "Badges"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
+
+      - name: Extract Pylint score
+        id: pylint-score
+        run: echo "name=score::$(cat pylint_report.txt | grep -oP '(?<=Your code has been rated at )[^/]+')" >> $GITHUB_STATE
+
+      - name: Publish score as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-artifact
+          path: pylint_report.txt

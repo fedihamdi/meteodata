@@ -1,0 +1,43 @@
+{'longitude': 'longitude',
+ 'latitude': 'latitude',
+ 'level': 'level',
+ 'time': 'FORECAST time from 20220710',
+ 'apg_conc': 'Alder Pollen Grain',
+ 'bpg_conc': 'Birch Pollen Grain',
+ 'gpg_conc': 'Grass Pollen Grain',
+ 'mpg_conc': 'Mugwort Pollen Grain',
+ 'opg_conc': 'Olive Pollen Grain',
+ 'rwpg_conc': 'Ragweed Pollen Grain'}
+
+{'longitude': 'longitude',
+ 'latitude': 'latitude',
+ 'time': 'time',
+ 'tp': 'Total precipitation'}
+
+{'longitude': 'longitude',
+ 'latitude': 'latitude',
+ 'time': 'time',
+ 't': 'Temperature',
+ 'r': 'Relative humidity'}
+
+{'longitude': 'longitude',
+ 'latitude': 'latitude',
+ 'level': 'level',
+ 'time': 'ANALYSIS time from 20221219',
+ 'chocho_conc': 'Glyoxal',
+ 'co_conc': 'Carbon Monoxide',
+ 'dust': 'Dust',
+ 'ecres_conc': 'Residential Elementary Carbon',
+ 'ectot_conc': 'Total Elementary Carbon',
+ 'hcho_conc': 'Formaldehyde',
+ 'nh3_conc': 'Ammonia',
+ 'nmvoc_conc': 'Non-Methane Volatile Organic Compounds',
+ 'no2_conc': 'Nitrogen Dioxide',
+ 'no_conc': 'Nitrogen Monoxide',
+ 'o3_conc': 'Ozone',
+ 'pans_conc': 'Acyl Peroxy Nitrates',
+ 'pm10_conc': 'PM10 Aerosol',
+ 'pm2p5_conc': 'PM2.5 Aerosol',
+ 'pmwf_conc': 'PM10 Aerosol from Wildfires',
+ 'sia_conc': 'Secondary Inorganic Aerosol',
+ 'so2_conc': 'Sulphur Dioxide'}
