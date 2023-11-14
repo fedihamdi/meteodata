@@ -56,15 +56,13 @@ direction %} {% get_admin_setting as admin_setting %}
     <main
       class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
     >
-      {% include "includes/navigation.html" %} {% block content %}{% endblock
-      content %}
+      {% include "includes/navigation.html" %} {% block content %}{% endblock content %}
     </main>
     <!-- APP Configurator -->
     {% include "includes/fixed-plugin.html" %}
 
     <!--   Core JS Files   -->
-    {% include 'includes/scripts.html' %} {% block scripts %}{% endblock scripts
-    %}
+    {% include 'includes/scripts.html' %} {% block scripts %}{% endblock scripts %}
 
     <script>
       var win = navigator.platform.indexOf("Win") > -1;
