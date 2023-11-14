@@ -1,6 +1,8 @@
-{% load i18n static admin_material %} {% get_current_language as LANGUAGE_CODE
-%} {% get_current_language_bidi as LANGUAGE_BIDI %} {% get_direction as
-direction %} {% get_admin_setting as admin_setting %}
+{% load i18n static admin_material %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+{% get_direction as direction %}
+{% get_admin_setting as admin_setting %}
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -54,8 +56,8 @@ direction %} {% get_admin_setting as admin_setting %}
     </main>
 
     <!-- APP Configurator -->
-    {% include "includes/fixed-plugin.html" %} {% include
-    'includes/scripts.html' %} {% block scripts %}{% endblock scripts %}
+    {% include "includes/fixed-plugin.html" %}
+    {% include 'includes/scripts.html' %} {% block scripts %}{% endblock scripts %}
 
     <script>
       var win = navigator.platform.indexOf("Win") > -1;
