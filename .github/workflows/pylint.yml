@@ -38,7 +38,7 @@ jobs:
       - name: Check Pylint Threshold
         run: |
           pylint_score="${{ steps.pylint.outputs.Pylint_Score }}"
-          pylint_score=$(echo "$pylint_score" | awk -F. '{print $0}')
+          pylint_score=$(echo "$pylint_score" | awk -F. '{print $1}')
           if [ "$pylint_score" -ge 9 ]; then
             echo "Pylint score meets the threshold."
           else
