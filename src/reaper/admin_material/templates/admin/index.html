@@ -673,8 +673,8 @@
               <div class="timeline-content">
                 <h6 class="text-dark text-sm font-weight-bold mb-0">
                   {% if entry.content_type %} {% filter capfirst %}{{
-                  entry.content_type }}{% endfilter %} {% else %} {% trans
-                  'Unknown content' %} {% endif %}
+                  entry.content_type }}{% endfilter %} {% else %}
+                  {% trans 'Unknown content' %} {% endif %}
                 </h6>
                 <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
                   {{ entry.object_repr }}
