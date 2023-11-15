@@ -18,9 +18,9 @@ def filter_data_user_position(only_data=False):
         path = os.path.join(
             os.path.abspath(os.path.join(os.getcwd(), os.pardir)),
             "data_nc",
-            "data_file_2023-11-11.parquet",
+            "data_file_2022-11-11.parquet",
         )
-        df = pd.read_parquet(path, engine="pyarrow")
+        df = pd.read_parquet(path, engine="pyarrow")  # pd.read_csv(path)#
         geocoder.ip("me")
         # if g.latlng is None :
         user_latitude, user_longitude = [48.8534, 2.4488]
@@ -31,6 +31,13 @@ def filter_data_user_position(only_data=False):
             & (round(df["longitude"]) == round(user_longitude))
         ]
         pollen_estimated = filtered_df.average_pollen_concentration.mean()
+        if pd.isna(pollen_estimated):
+            pollen_estimated = 0
+            filtered_df["average_pollen_concentration"].fillna(0, inplace=True)
+        else:
+            logger_me.info(
+                f"estimated pollen concentration is available {pollen_estimated}"
+            )
         cache.set("my_data_key", df, 3600)
         cache.set("my_data_key", filtered_df, 3600)
     else:
