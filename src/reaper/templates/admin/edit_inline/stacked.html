@@ -56,10 +56,11 @@
             {% if inline_admin_form.form.non_field_errors %} {{
             inline_admin_form.form.non_field_errors }} {% endif %} {% for
             fieldset in inline_admin_form %} {% include
-            "admin/includes/fieldset.html" %} {% endfor %} {% if
-            inline_admin_form.needs_explicit_pk_field %} {{
-            inline_admin_form.pk_field.field }} {% endif %} {% if
-            inline_admin_form.fk_field %} {{ inline_admin_form.fk_field.field }}
+            "admin/includes/fieldset.html" %} {% endfor %}
+            {% if inline_admin_form.needs_explicit_pk_field %}
+            {{ inline_admin_form.pk_field.field }} {% endif %}
+            {% if inline_admin_form.fk_field %}
+            {{ inline_admin_form.fk_field.field }}
             {% endif %}
           </div>
         </div>
