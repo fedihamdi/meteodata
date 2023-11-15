@@ -15,8 +15,12 @@ token = "pk.eyJ1IjoiZmVkaWhhbWRpIiwiYSI6ImNrOGx2MzIxcTBhdWUzZm9raGdudzF1a2QifQ.E
 
 def filter_data_user_position(only_data=False):
     if not cache.get("my_data_key"):
-        path = os.path.join(os.getcwd()[:-10], "data_file_2022-07-10.csv")
-        df = pd.read_csv(path)
+        path = os.path.join(
+            os.path.abspath(os.path.join(os.getcwd(), os.pardir)),
+            "data_nc",
+            "data_file_2023-11-11.parquet",
+        )
+        df = pd.read_parquet(path, engine="pyarrow")
         geocoder.ip("me")
         # if g.latlng is None :
         user_latitude, user_longitude = [48.8534, 2.4488]
