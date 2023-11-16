@@ -20,7 +20,7 @@
           </div>
           <div class="text-end pt-1">
             <p class="text-sm mb-0 text-capitalize">Pollen near me</p>
-            <h4 class="mb-0">{{estimation_view|escapejs}}</h4>
+            <h4 id="pollenValue" class="mb-0">{{estimation_view|escapejs}}</h4>
             <h6>grains m-3</h6>
           </div>
         </div>
@@ -917,33 +917,43 @@
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Assuming you have a dictionary with threshold values
-        var thresholdsCarbonMonoxide = {
-            'high': 50,
-            'medium': 20,
-            'low': 0,
-        };
-
-        // Get the carbon_monoxide value from the HTML
-        var carbonMonoxideValue = parseFloat(document.getElementById("carbonMonoxideValue").innerText);
+    function updateTextColor(elementId, thresholds, classPrefix) {
+      var WdigetElement = document.getElementById(elementId);
+      var WidgetValue = parseFloat(WdigetElement.innerText);
 
         // Determine the class based on the thresholds
-        var colorClass;
-        if (carbonMonoxideValue > thresholdsCarbonMonoxide.high) {
-            colorClass = 'red-text';
-        } else if (carbonMonoxideValue > thresholdsCarbonMonoxide.medium) {
-            colorClass = 'orange-text';
+      var colorClass;
+        if (WidgetValue > thresholds.high) {
+            colorClass = classPrefix + 'red-text';
+        } else if (WidgetValue > thresholds.medium) {
+            colorClass = classPrefix + 'orange-text';
         } else {
-            colorClass = 'green-text';
+            colorClass = classPrefix + 'green-text';
         }
 
         // Apply the class to the element
-        var carbonMonoxideElement = document.getElementById("carbonMonoxideValue");
-        carbonMonoxideElement.classList.add(colorClass);
+      WdigetElement.classList.add(colorClass);
 
         // Update the color of the text
-        carbonMonoxideElement.style.color = getComputedStyle(document.body).getPropertyValue("--" + colorClass + "-color");
+      WdigetElement.style.color = getComputedStyle(document.body).getPropertyValue("--" + colorClass + "-color");
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var CarbonMonoxideThresholds = {
+        'high': 50,
+        'medium': 20,
+        'low': 0,
+      };
+
+      var PollenThresholds = {
+        'high': 30,
+        'medium': 60,
+        'low': 90,
+      };
+
+        // Call the function with the element ID, thresholds, and class prefix
+      updateTextColor("carbonMonoxideValue", CarbonMonoxideThresholds, '');
+      updateTextColor("pollenValue", PollenThresholds, '');
     });
   </script>
   {% endblock scripts %}
