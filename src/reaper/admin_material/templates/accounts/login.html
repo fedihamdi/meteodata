@@ -1,5 +1,7 @@
-{% extends 'layouts/base-fullscreen.html' %} {% load i18n static admin_material
-%} {% block content %} {% include 'includes/navigation-fullscreen.html' %}
+{% extends 'layouts/base-fullscreen.html' %}
+{% load i18n static admin_material %}
+{% block content %}
+{% include 'includes/navigation-fullscreen.html' %}
 
 <main class="main-content mt-0">
   <div
@@ -30,10 +32,13 @@
             </div>
             <div class="card-body">
               <form method="post" role="form" class="text-start" action="#">
-                {% csrf_token %} {% if form.non_field_errors %} {% for error in
-                form.non_field_errors %}
-                <span class="text-danger">{{ error }}</span>
-                {% endfor %} {% endif %} {% for field in form %}
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                  {% for error in form.non_field_errors %}
+                    <span class="text-danger">{{ error }}</span>
+                  {% endfor %}
+                {% endif %}
+                {% for field in form %}
                 <div class="input-group input-group-outline mb-3">
                   {{ field }}
                 </div>

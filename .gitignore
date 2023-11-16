@@ -153,6 +153,7 @@ cython_debug/
 # csv and pkl
 *.csv
 *.pkl
+*.parquet
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore

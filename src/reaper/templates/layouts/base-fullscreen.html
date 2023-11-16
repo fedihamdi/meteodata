@@ -1,6 +1,9 @@
-{% load i18n static admin_material %} {% get_current_language as LANGUAGE_CODE
-%} {% get_current_language_bidi as LANGUAGE_BIDI %} {% get_direction as
-direction %} {% get_admin_setting as admin_setting %}
+{% load i18n static admin_material %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+{% get_direction as direction %}
+{% get_admin_setting as admin_setting %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -44,8 +47,8 @@ direction %} {% get_admin_setting as admin_setting %}
   </head>
 
   <body class="bg-gray-200">
-    {% block content %}{% endblock content %} {% include "includes/scripts.html"
-    %}
+    {% block content %}{% endblock content %}
+    {% include "includes/scripts.html" %}
 
     <!-- Specific JS goes HERE -->
     {% block scripts %}{% endblock scripts %}
