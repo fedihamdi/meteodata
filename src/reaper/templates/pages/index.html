@@ -1,6 +1,13 @@
 {% extends 'layouts/base.html' %} {% load i18n static %} {% block title %} Home
 {% endblock title %} {% block content %}
 <!-- THE ONE USED FOR THE MAIN PAGE ! THIS IS THE ONE TO MODIFY-->
+
+<style>
+    .red-text { color: #d71919; }
+    .orange-text { color: #e75216; }
+    .green-text { color: #14a614; }
+</style>
+
 <div class="container-fluid py-4">
   <div class="row">
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -36,15 +43,14 @@
           </div>
           <div class="text-end pt-1">
             <p class="text-sm mb-0 text-capitalize">Carbon Monoxide</p>
-            <h4 class="mb-0">{{carbon_monoxide|safe}}</h4>
+            <h4 id="carbonMonoxideValue" class="mb-0">{{carbon_monoxide|safe}}</h4>
             <h6>µg m-3</h6>
           </div>
         </div>
         <hr class="dark horizontal my-0" />
         <div class="card-footer p-3">
           <p class="mb-0">
-            <span class="text-danger text-sm font-weight-bolder">+1% </span
-            >than last month
+            <span class="text-danger text-sm font-weight-bolder"> +1% </span> than last month
           </p>
         </div>
       </div>
@@ -910,5 +916,35 @@
     childElements.style.transformBox = "fill-box";
   </script>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Assuming you have a dictionary with threshold values
+        var thresholdsCarbonMonoxide = {
+            'high': 50,
+            'medium': 20,
+            'low': 0,
+        };
+
+        // Get the carbon_monoxide value from the HTML
+        var carbonMonoxideValue = parseFloat(document.getElementById("carbonMonoxideValue").innerText);
+
+        // Determine the class based on the thresholds
+        var colorClass;
+        if (carbonMonoxideValue > thresholdsCarbonMonoxide.high) {
+            colorClass = 'red-text';
+        } else if (carbonMonoxideValue > thresholdsCarbonMonoxide.medium) {
+            colorClass = 'orange-text';
+        } else {
+            colorClass = 'green-text';
+        }
+
+        // Apply the class to the element
+        var carbonMonoxideElement = document.getElementById("carbonMonoxideValue");
+        carbonMonoxideElement.classList.add(colorClass);
+
+        // Update the color of the text
+        carbonMonoxideElement.style.color = getComputedStyle(document.body).getPropertyValue("--" + colorClass + "-color");
+    });
+  </script>
   {% endblock scripts %}
 </div>
