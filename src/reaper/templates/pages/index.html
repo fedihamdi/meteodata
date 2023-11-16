@@ -24,7 +24,11 @@
             <h4 id="pollenValue" class="mb-0">{{estimation_view|escapejs}}</h4>
             <h6>grains m-3</h6>
           </div>
-            <button type="button" id="popoverButton1" class="btn btn-sm btn-info position-absolute bottom-0 end-0 mb-3 mr-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Une exposition élevée aux pollens peut déclencher des réactions allergiques sévères, entraînant des symptômes tels que des éternuements, des démangeaisons et des difficultés respiratoires chez les personnes allergiques. Cela peut considérablement affecter leur qualité de vie." data-bs-trigger="hover">
+            <button type="button" id="popoverButton1"
+                    class="btn btn-sm btn-info position-absolute bottom-0 end-0 mb-3 mr-1"
+                    data-bs-toggle="popover" data-bs-placement="top"
+                    data-bs-content="Une exposition élevée aux pollens peut déclencher des réactions allergiques
+                    sévères, entraînant des symptômes tels que des éternuements, des démangeaisons et des difficultés respiratoires chez les personnes allergiques. Cela peut considérablement affecter leur qualité de vie." data-bs-trigger="hover">
               ?
             </button>
         </div>
@@ -101,13 +105,23 @@ Une exposition excessive au monoxyde de carbone peut provoquer des symptômes gr
           </div>
           <div class="text-end pt-1">
             <p class="text-sm mb-0 text-capitalize">PM10</p>
-            <h4 class="mb-0">... calculating</h4>
+            <h4 class="mb-0">{{pm10_view|safe}}</h4>
+            <h6>µg m-3</h6>
           </div>
+          <button type="button" id="popoverButton1"
+                    class="btn btn-sm btn-info position-absolute bottom-0 end-0 mb-3 mr-1"
+                    data-bs-toggle="popover" data-bs-placement="top"
+                    data-bs-content="Une exposition prolongée aux particules fines PM10 peut déclencher divers
+                    symptômes, tels que des difficultés respiratoires, des irritations et des maux de tête,
+                    impactant significativement la qualité de vie des individus sensibles."
+                  data-bs-trigger="hover">
+              ?
+            </button>
         </div>
         <hr class="dark horizontal my-0" />
         <div class="card-footer p-3">
           <p class="mb-0">
-            <span class="text-success text-sm font-weight-bolder"> % </span>than
+            <span class="text-success text-sm font-weight-bolder"> %0 </span>than
             yesterday
           </p>
         </div>
@@ -129,6 +143,8 @@ Une exposition excessive au monoxyde de carbone peut provoquer des symptômes gr
           <p class="text-sm mb-0 text-capitalize">My map</p>
         </div>
       </div>
+<!--      {{ pollen_map|safe }}-->
+
       <hr class="dark horizontal my-0" />
     </div>
     <div id="map-chart"></div>

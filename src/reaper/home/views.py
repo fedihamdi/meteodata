@@ -1,12 +1,15 @@
 import logging
 import os
 
+import dash
 import geocoder
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from django.core.cache import cache
 from django.shortcuts import render
+
+app = dash.Dash(__name__)
 
 logger_me = logging.getLogger(__name__)
 logger_me.setLevel(logging.DEBUG)
@@ -30,7 +33,7 @@ def filter_data_user_position(only_data=False):
             (round(df["latitude"]) == round(user_latitude))
             & (round(df["longitude"]) == round(user_longitude))
         ]
-        pollen_estimated = filtered_df.average_pollen_concentration.mean()
+        pollen_estimated = round(filtered_df["average_pollen_concentration"].mean(), 2)
         if pd.isna(pollen_estimated):
             pollen_estimated = 0
             filtered_df["average_pollen_concentration"].fillna(0, inplace=True)
@@ -55,10 +58,12 @@ def estimation_data_view():
     estimation_view = round(data.average_pollen_concentration.mean(), 2)
     co_view = round(data.co_conc.mean(), 2)
     o3_view = round(data.o3_conc.mean(), 2)
+    pm10_view = round(data.pm10_conc.mean(), 2)
     context1 = {
         "estimation_view": estimation_view,
         "carbon_monoxide": co_view,
         "ozone_view": o3_view,
+        "pm10_view": pm10_view,
     }
     return context1  # render(request, 'pages/index.html', context1)
 
@@ -78,12 +83,12 @@ def pollen_data_view(request):
         hover_name="average_pollen_concentration",
         center=dict(lat=user_latitude, lon=user_longitude),
         zoom=10,
-        radius=100,
+        radius=100 / (2 ** (10 - zoom)),
         opacity=0.7,
         mapbox_style="dark",
-        animation_frame="time",
-        color_continuous_scale="Bluered",
-        animation_group="average_pollen_concentration",
+        # animation_frame="time",
+        # color_continuous_scale="Bluered",
+        # animation_group="average_pollen_concentration",
     )
     fig.update_layout(legend_title="Pollen C° and position")
     fig.add_trace(
@@ -106,6 +111,8 @@ def pollen_data_view(request):
             mode="markers",
             marker=go.scattermapbox.Marker(size=pollen_estimated * 10, opacity=0.2),
             name=f"Estimation {round(pollen_estimated,2)}",
+            hoverinfo="text",
+            text=[f"Estimation: {round(pollen_estimated, 2)}"],
         )
     )
 
@@ -123,6 +130,7 @@ def pollen_data_view(request):
     fig.update_layout(mapbox=dict(style="satellite-streets", accesstoken=token))
     context2 = {
         "pollen_fig": fig.to_json(engine="json"),
+        "pollen_map": fig.to_html(),
         "data_snap": data_snapshot(filtered_df, "average_pollen_concentration"),
         "data_snap_nitro": data_snapshot(filtered_df, "no2_conc"),
     }

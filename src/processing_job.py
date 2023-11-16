@@ -292,12 +292,17 @@ class DataProcessingJob:
             "opg_conc",
             "rwpg_conc",
         ]
-        df_pollen["average_pollen_concentration"] = df_pollen.loc[
-            :, df_pollen.columns.isin(exclude_columns)
-        ].mean(axis=1)
+        df_pollen["average_pollen_concentration"] = (
+            df_pollen.loc[:, df_pollen.columns.isin(exclude_columns)]
+            .mean(axis=1)
+            .round(2)
+        )
         df_pollen["average_pollen_c_"] = df_pollen.average_pollen_concentration.apply(
             lambda x: float(f"{x:.2e}")
         )
+        df_pollen[
+            "average_pollen_concentration"
+        ] = df_pollen.average_pollen_concentration.apply(lambda x: float(f"{x:.2e}"))
 
         df_all_pol = client.merge_dataframes_geometry(
             df1=df_all, df2=df_pollen, op="nearest"
@@ -365,7 +370,7 @@ class DataProcessingJob:
 
 if __name__ == "__main__":
     start_date = "2022-07-12 00:00:00"
-    end_date = "2022-07-20 00:00:00"
+    end_date = "2022-07-13 00:00:00"
 
     job = DataProcessingJob(start_date, end_date, state="local")
     job.run()
