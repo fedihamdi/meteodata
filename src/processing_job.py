@@ -365,7 +365,7 @@ class DataProcessingJob:
 
 if __name__ == "__main__":
     start_date = "2022-07-12 00:00:00"
-    end_date = "2022-07-30 00:00:00"
+    end_date = "2022-07-20 00:00:00"
 
     job = DataProcessingJob(start_date, end_date, state="local")
     job.run()
