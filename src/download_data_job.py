@@ -167,8 +167,8 @@ def mover():
 
 
 if __name__ == "__main__":
-    start_ = "2022-11-11 00:00:00"
-    end_ = "2022-11-12 00:00:00"
+    start_ = "2022-07-11 00:00:00"
+    end_ = "2022-11-15 00:00:00"
     state = "local"
     main(state=state, start_date=start_, end_date=end_)
     if state == "local":

@@ -18,7 +18,7 @@ def filter_data_user_position(only_data=False):
         path = os.path.join(
             os.path.abspath(os.path.join(os.getcwd(), os.pardir)),
             "data_nc",
-            "data_file_2022-11-11.parquet",
+            "data_file_20231116.parquet",
         )
         df = pd.read_parquet(path, engine="pyarrow")  # pd.read_csv(path)#
         geocoder.ip("me")
@@ -74,13 +74,16 @@ def pollen_data_view(request):
         filtered_df,
         lat="latitude",
         lon="longitude",
-        z="average_pollen_c_",
-        hover_name="average_pollen_c_",
+        z="average_pollen_concentration",
+        hover_name="average_pollen_concentration",
         center=dict(lat=user_latitude, lon=user_longitude),
         zoom=10,
         radius=100,
         opacity=0.7,
-        mapbox_style="dark",  # title='Pollen breach worldwide',
+        mapbox_style="dark",
+        animation_frame="time",
+        color_continuous_scale="Bluered",
+        animation_group="average_pollen_concentration",
     )
     fig.update_layout(legend_title="Pollen C° and position")
     fig.add_trace(
@@ -121,6 +124,7 @@ def pollen_data_view(request):
     context2 = {
         "pollen_fig": fig.to_json(engine="json"),
         "data_snap": data_snapshot(filtered_df, "average_pollen_concentration"),
+        "data_snap_nitro": data_snapshot(filtered_df, "no2_conc"),
     }
     context2.update(estimation_data_view())
     return render(request, "pages/index.html", context2)

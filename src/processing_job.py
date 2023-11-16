@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+from datetime import date
 
 import pandas as pd
 import xarray as xr
@@ -31,15 +32,16 @@ class DataProcessingJob:
         self.output_directory = outputDirectory
         self.state = state
         self.local_dir = os.path.join(os.getcwd(), "data_nc")
+        self.today_date = str(date.today()).replace("-", "")
 
     def save_locally(self, df_all_pol):
         # Save the processed data to Parquet locally
-        output_filename = f"data_file_{self.start_date[:10]}.parquet"
-        output_filename_csv = f"data_file_{self.start_date[:10]}.csv"
+        output_filename = f"data_file_{self.today_date}.parquet"
+        # output_filename_csv = f"data_file_{self.start_date[:10]}.csv"
         output_path = os.path.join(self.output_directory, output_filename)
-        output_path_csv = os.path.join(self.output_directory, output_filename_csv)
+        # output_path_csv = os.path.join(self.output_directory, output_filename_csv)
         df_all_pol.to_parquet(output_path, index=False, engine="pyarrow")
-        df_all_pol.to_csv(output_path_csv, index=False)
+        # df_all_pol.to_csv(output_path_csv, index=False)
         return output_path
 
     def upload_to_blob(self, local_path):
@@ -362,8 +364,8 @@ class DataProcessingJob:
 
 
 if __name__ == "__main__":
-    start_date = "2022-11-11 00:00:00"
-    end_date = "2022-11-12 00:00:00"
+    start_date = "2022-07-12 00:00:00"
+    end_date = "2022-07-30 00:00:00"
 
     job = DataProcessingJob(start_date, end_date, state="local")
     job.run()

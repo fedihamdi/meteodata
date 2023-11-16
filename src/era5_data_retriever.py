@@ -95,7 +95,7 @@ class ERA5DataRetriever:
             "day": self.day,
             "time": self.time,
             "format": self.format,
-            "area": [51.99, -8.45, 41.57, 13.86],
+            "area": [49.88, 1.09, 48, 3.95],
         }
         self.c.retrieve(database, request_params, output_filename)
 
