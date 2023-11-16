@@ -111,7 +111,7 @@ class CAMSDataRetriever:
             "type": self.type,
             "time": self.time,
             "leadtime_hour": self.leadtime_hour,
-            "area": [51.99, -8.45, 41.57, 13.86],
+            "area": [49.88, 1.09, 48, 3.95],
         }
         self.c.retrieve(
             "cams-europe-air-quality-forecasts", request_params, output_filename
