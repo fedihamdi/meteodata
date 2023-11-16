@@ -7,6 +7,7 @@
     .orange-text { color: #e75216; }
     .green-text { color: #14a614; }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="container-fluid py-4">
   <div class="row">
@@ -23,6 +24,9 @@
             <h4 id="pollenValue" class="mb-0">{{estimation_view|escapejs}}</h4>
             <h6>grains m-3</h6>
           </div>
+            <button type="button" id="popoverButton1" class="btn btn-sm btn-info position-absolute bottom-0 end-0 mb-3 mr-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Une exposition élevée aux pollens peut déclencher des réactions allergiques sévères, entraînant des symptômes tels que des éternuements, des démangeaisons et des difficultés respiratoires chez les personnes allergiques. Cela peut considérablement affecter leur qualité de vie." data-bs-trigger="hover">
+              ?
+            </button>
         </div>
         <hr class="dark horizontal my-0" />
         <div class="card-footer p-3">
@@ -46,6 +50,10 @@
             <h4 id="carbonMonoxideValue" class="mb-0">{{carbon_monoxide|safe}}</h4>
             <h6>µg m-3</h6>
           </div>
+            <button type="button" id="popoverButton1" class="btn btn-sm btn-info position-absolute bottom-0 end-0 mb-3 mr-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="
+Une exposition excessive au monoxyde de carbone peut provoquer des symptômes graves tels que maux de tête, nausées et confusion, pouvant entraîner des problèmes de santé sérieux voire mortels. Il est crucial de prendre des mesures pour prévenir l'inhalation de ce gaz toxique." data-bs-trigger="hover">
+              ?
+            </button>
         </div>
         <hr class="dark horizontal my-0" />
         <div class="card-footer p-3">
@@ -59,15 +67,17 @@
       <div class="card">
         <div class="card-header p-3 pt-2">
           <div
-            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute"
-          >
+            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
             <i class="material-icons opacity-10">person</i>
           </div>
           <div class="text-end pt-1">
             <p class="text-sm mb-0 text-capitalize">Ozone</p>
-            <h4 class="mb-0">{{ozone_view|safe}}</h4>
+            <h4 id="OzoneValue" class="mb-0">{{ozone_view|safe}}</h4>
             <h6>µg m-3</h6>
           </div>
+            <button type="button" id="popoverButton1" class="btn btn-sm btn-info position-absolute bottom-0 end-0 mb-3 mr-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Une exposition prolongée à l'ozone peut causer des problèmes respiratoires, des irritations des yeux, et aggraver les conditions pulmonaires préexistantes. Il est essentiel de limiter l'exposition à cet oxydant atmosphérique pour maintenir une santé respiratoire optimale." data-bs-trigger="hover">
+              ?
+            </button>
         </div>
         <hr class="dark horizontal my-0" />
         <div class="card-footer p-3">
@@ -940,9 +950,9 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       var CarbonMonoxideThresholds = {
-        'high': 50,
-        'medium': 20,
-        'low': 0,
+        'high': 130,
+        'medium': 100,
+        'low': 60,
       };
 
       var PollenThresholds = {
@@ -951,10 +961,24 @@
         'low': 90,
       };
 
+      var OzoneThresholds = {
+        'high': 70,
+        'medium': 30,
+        'low': 10,
+      };
+
         // Call the function with the element ID, thresholds, and class prefix
       updateTextColor("carbonMonoxideValue", CarbonMonoxideThresholds, '');
       updateTextColor("pollenValue", PollenThresholds, '');
+      updateTextColor("OzoneValue", OzoneThresholds, '');
     });
   </script>
+<script>
+// Initialize Bootstrap popovers
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+});
+</script>
   {% endblock scripts %}
 </div>
