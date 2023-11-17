@@ -1,56 +1,51 @@
 import logging
-import os
 
-import dash
-import geocoder
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from django.core.cache import cache
 from django.shortcuts import render
 
-app = dash.Dash(__name__)
+from .filter_data import filter_data_user_position
 
 logger_me = logging.getLogger(__name__)
 logger_me.setLevel(logging.DEBUG)
 token = "pk.eyJ1IjoiZmVkaWhhbWRpIiwiYSI6ImNrOGx2MzIxcTBhdWUzZm9raGdudzF1a2QifQ.E_Ho9zB0bqNqxApIB5n_QQ"
 
 
-def filter_data_user_position(only_data=False):
-    if not cache.get("my_data_key"):
-        path = os.path.join(
-            os.path.abspath(os.path.join(os.getcwd(), os.pardir)),
-            "data_nc",
-            "data_file_20231116.parquet",
-        )
-        df = pd.read_parquet(path, engine="pyarrow")  # pd.read_csv(path)#
-        geocoder.ip("me")
-        # if g.latlng is None :
-        user_latitude, user_longitude = [48.8534, 2.4488]
-        # else :
-        # user_latitude, user_longitude = g.latlng
-        filtered_df = df[
-            (round(df["latitude"]) == round(user_latitude))
-            & (round(df["longitude"]) == round(user_longitude))
-        ]
-        pollen_estimated = round(filtered_df["average_pollen_concentration"].mean(), 2)
-        if pd.isna(pollen_estimated):
-            pollen_estimated = 0
-            filtered_df["average_pollen_concentration"].fillna(0, inplace=True)
-        else:
-            logger_me.info(
-                f"estimated pollen concentration is available {pollen_estimated}"
-            )
-        cache.set("my_data_key", df, 3600)
-        cache.set("my_data_key", filtered_df, 3600)
-    else:
-        df = cache.get("my_data_key")
-        filtered_df = df
-
-    if only_data:
-        return [filtered_df, user_latitude, user_longitude, pollen_estimated]
-    else:
-        return filtered_df
+# def filter_data_user_position(only_data=False):
+#     if not cache.get("my_data_key"):
+#         path = os.path.join(
+#             os.path.abspath(os.path.join(os.getcwd(), os.pardir)),
+#             "data_nc",
+#             "data_file_20231116.parquet",
+#         )
+#         df = pd.read_parquet(path, engine="pyarrow")  # pd.read_csv(path)#
+#         geocoder.ip("me")
+#         # if g.latlng is None :
+#         user_latitude, user_longitude = [48.8534, 2.4488]
+#         # else :
+#         # user_latitude, user_longitude = g.latlng
+#         filtered_df = df[
+#             (round(df["latitude"]) == round(user_latitude))
+#             & (round(df["longitude"]) == round(user_longitude))
+#         ]
+#         pollen_estimated = round(filtered_df["average_pollen_concentration"].mean(), 2)
+#         if pd.isna(pollen_estimated):
+#             pollen_estimated = 0
+#             filtered_df["average_pollen_concentration"].fillna(0, inplace=True)
+#         else:
+#             logger_me.info(
+#                 f"estimated pollen concentration is available {pollen_estimated}"
+#             )
+#         cache.set("my_data_key", df, 3600)
+#         cache.set("my_data_key", filtered_df, 3600)
+#     else:
+#         df = cache.get("my_data_key")
+#         filtered_df = df
+#
+#     if only_data:
+#         return [filtered_df, user_latitude, user_longitude, pollen_estimated]
+#     else:
+#         return filtered_df
 
 
 def estimation_data_view():
@@ -83,7 +78,7 @@ def pollen_data_view(request):
         hover_name="average_pollen_concentration",
         center=dict(lat=user_latitude, lon=user_longitude),
         zoom=10,
-        radius=100 / (2 ** (10 - zoom)),
+        radius=100,
         opacity=0.7,
         mapbox_style="dark",
         # animation_frame="time",
