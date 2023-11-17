@@ -27,5 +27,7 @@ tzdata==2023.3
 urllib3==2.0.6
 whitenoise==6.6.0
 pyarrow
+folium
+django_user_agents
 # psycopg2-binary
 # mysqlclient

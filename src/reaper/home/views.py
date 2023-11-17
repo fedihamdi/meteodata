@@ -1,8 +1,12 @@
 import logging
 
+import folium
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.offline as opy
 from django.shortcuts import render
+from django_user_agents.utils import get_user_agent
+from folium.plugins import HeatMap
 
 from .filter_data import filter_data_user_position
 
@@ -70,65 +74,103 @@ def pollen_data_view(request):
         user_longitude,
         pollen_estimated,
     ) = filter_data_user_position(only_data=True)
-    fig = px.density_mapbox(
-        filtered_df,
-        lat="latitude",
-        lon="longitude",
-        z="average_pollen_concentration",
-        hover_name="average_pollen_concentration",
-        center=dict(lat=user_latitude, lon=user_longitude),
-        zoom=10,
-        radius=100,
-        opacity=0.7,
-        mapbox_style="dark",
-        # animation_frame="time",
-        # color_continuous_scale="Bluered",
-        # animation_group="average_pollen_concentration",
-    )
-    fig.update_layout(legend_title="Pollen C° and position")
-    fig.add_trace(
-        go.Scattermapbox(
-            lat=[user_latitude],
-            lon=[user_longitude],
-            mode="markers",
-            marker=go.scattermapbox.Marker(
-                size=14,
-                color="blue",
-            ),
-            name="User Location",
-            customdata=[pollen_estimated],
-        )
-    )
-    fig.add_trace(
-        go.Scattermapbox(
-            lat=[user_latitude],
-            lon=[user_longitude],
-            mode="markers",
-            marker=go.scattermapbox.Marker(size=pollen_estimated * 10, opacity=0.2),
-            name=f"Estimation {round(pollen_estimated,2)}",
-            hoverinfo="text",
-            text=[f"Estimation: {round(pollen_estimated, 2)}"],
-        )
-    )
 
-    fig.update_layout(
-        mapbox=dict(center=dict(lat=user_latitude, lon=user_longitude), zoom=9.5)
-    )
-    fig.update_layout(
-        coloraxis_colorbar=dict(  # yanchor="top", xanchor="left",y=1, x=0.5, ticks="outside",
-            title="Pollen C°"
+    user_agent = get_user_agent(request)
+    is_mobile = user_agent.is_mobile
+    if not is_mobile:
+        fig = px.density_mapbox(
+            filtered_df,
+            lat="latitude",
+            lon="longitude",
+            z="average_pollen_concentration",
+            hover_name="average_pollen_concentration",
+            center=dict(lat=user_latitude, lon=user_longitude),
+            zoom=10,
+            radius=100,
+            opacity=0.7,
+            mapbox_style="dark",
+            # animation_frame="time",
+            # color_continuous_scale="Bluered",
+            # animation_group="average_pollen_concentration",
         )
-    )
-    # fig.update_coloraxes(colorbar_orientation='h')
-    # fig.update_traces(coloraxis_colorbar=dict(orientation='h', yanchor='bottom', y=1.02), colorscale='Viridis')
+        fig.update_layout(legend_title="Pollen C° and position")
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[user_latitude],
+                lon=[user_longitude],
+                mode="markers",
+                marker=go.scattermapbox.Marker(
+                    size=14,
+                    color="blue",
+                ),
+                name="User Location",
+                customdata=[pollen_estimated],
+            )
+        )
+        fig.add_trace(
+            go.Scattermapbox(
+                lat=[user_latitude],
+                lon=[user_longitude],
+                mode="markers",
+                marker=go.scattermapbox.Marker(size=pollen_estimated * 10, opacity=0.2),
+                name=f"Estimation {round(pollen_estimated,2)}",
+                hoverinfo="text",
+                text=[f"Estimation: {round(pollen_estimated, 2)}"],
+            )
+        )
 
-    fig.update_layout(mapbox=dict(style="satellite-streets", accesstoken=token))
-    context2 = {
-        "pollen_fig": fig.to_json(engine="json"),
-        "pollen_map": fig.to_html(),
-        "data_snap": data_snapshot(filtered_df, "average_pollen_concentration"),
-        "data_snap_nitro": data_snapshot(filtered_df, "no2_conc"),
-    }
+        fig.update_layout(
+            mapbox=dict(center=dict(lat=user_latitude, lon=user_longitude), zoom=9.5)
+        )
+        fig.update_layout(
+            coloraxis_colorbar=dict(  # yanchor="top", xanchor="left",y=1, x=0.5, ticks="outside",
+                title="Pollen C°"
+            )
+        )
+        # fig.update_coloraxes(colorbar_orientation='h')
+        # fig.update_traces(coloraxis_colorbar=dict(orientation='h', yanchor='bottom', y=1.02), colorscale='Viridis')
+
+        fig.update_layout(mapbox=dict(style="satellite-streets", accesstoken=token))
+        context2 = {
+            "pollen_fig": fig.to_json(engine="json"),
+            "pollen_map": opy.plot(
+                fig, auto_open=True, output_type="div"
+            ),  # fig.to_html(),
+            "data_snap": data_snapshot(filtered_df, "average_pollen_concentration"),
+            "data_snap_nitro": data_snapshot(filtered_df, "no2_conc"),
+        }
+    else:
+        pollen_map = folium.Map(location=[user_latitude, user_longitude], zoom_start=10)
+
+        # Ajoutez une couche de densité avec les données de concentration de pollen
+        heat_data = [
+            [row["latitude"], row["longitude"], row["average_pollen_concentration"]]
+            for index, row in filtered_df.iterrows()
+        ]
+        heat_data.append([user_latitude, user_longitude, pollen_estimated])
+        HeatMap(
+            heat_data,
+            radius_fixed=True,
+            radius=100,
+            opacity=0.5,
+        ).add_to(pollen_map)
+
+        # Ajoutez un marqueur pour la position de l'utilisateur
+        folium.Marker(
+            location=[user_latitude, user_longitude],
+            popup=f"User Location\nPollen Estimation: {round(pollen_estimated, 2)}",
+            icon=folium.Icon(color="blue"),
+        ).add_to(pollen_map)
+
+        # Convertissez la carte en HTML
+        map_html = pollen_map._repr_html_()
+        context2 = {
+            # "pollen_fig": fig.to_json(engine="json"),
+            "pollen_map": map_html,
+            "data_snap": data_snapshot(filtered_df, "average_pollen_concentration"),
+            "data_snap_nitro": data_snapshot(filtered_df, "no2_conc"),
+        }
+
     context2.update(estimation_data_view())
     return render(request, "pages/index.html", context2)
 
