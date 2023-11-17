@@ -11,7 +11,7 @@ logger_me = logging.getLogger(__name__)
 def filter_data_user_position(only_data=False):
     if not cache.get("my_data_key"):
         path = os.path.join(
-            os.path.abspath(os.path.join(os.getcwd(), os.pardir)),
+            os.getcwd(),
             "data_nc",
             "data_file_20231116.parquet",
         )
