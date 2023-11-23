@@ -44,6 +44,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5085",
     "http://0.0.0.0:8000",
     "http://10.192.19.102:8000",
+    "https://breatheeasy.azurewebsites.net",
+    "https://breatheeasy-764k.onrender.com",
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
