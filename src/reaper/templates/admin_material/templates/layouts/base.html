@@ -1,3 +1,18 @@
+<!--
+=========================================================
+* Breatheasy - v3.0.4
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-dashboard
+* Copyright 2022 MD5 Team 5 (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by MD5 Team 5
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+
 {% load i18n static admin_material %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
@@ -5,7 +20,7 @@
 {% get_admin_setting as admin_setting %}
 
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -18,7 +33,8 @@
       href="{% static 'img/apple-icon.png' %}"
     />
     <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
-    <title>Breatheasy - {% block title %}{% endblock title %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Material Dashboard - {% block title %}{% endblock %}</title>
     <!--     Fonts and icons     -->
     <link
       rel="stylesheet"
@@ -44,19 +60,22 @@
       href="{% static 'css/material-dashboard.css' %}"
       rel="stylesheet"
     />
+
+    {% block extrastyle %}{% endblock extrastyle %}
   </head>
 
-  <body class="g-sidenav-show rtl bg-gray-200">
-    {% include 'includes/sidebar-rtl.html' %}
+  <body class="g-sidenav-show bg-gray-200">
+    {% include "includes/sidebar.html" %}
     <main
-      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg overflow-x-hidden"
+      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
     >
-      {% include 'includes/navigation-rtl.html' %} {% block content %}
+      {% include "includes/navigation.html" %} {% block content %}
       {% endblock content %}
     </main>
-
     <!-- APP Configurator -->
     {% include "includes/fixed-plugin.html" %}
+
+    <!--   Core JS Files   -->
     {% include 'includes/scripts.html' %} {% block scripts %}{% endblock scripts %}
 
     <script>
@@ -69,10 +88,8 @@
       }
     </script>
     <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js">
-      </>
-        <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-        <script src="{% static 'js/material-dashboard.min.js' %}">
-    </script>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="{% static 'js/material-dashboard.min.js' %}"></script>
   </body>
 </html>

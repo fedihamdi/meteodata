@@ -5,6 +5,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 :root {
+  --red-text-color: #f12525;
+  --orange-text-color: #eea01a;
+  --green-text-color: #32bb32;
+
   --bs-blue: #63b3ed;
   --bs-indigo: #596cff;
   --bs-purple: #6f42c1;

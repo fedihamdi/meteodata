@@ -22,4 +22,4 @@ jobs:
       - name: Build the Docker image
         run: |
           cd ./src/reaper/
-          docker build -t my-image-name:$(date +\%s) -f Dockerfile .
+          docker build -t meteodata:$(date +\%s) -f Dockerfile .

@@ -26,8 +26,8 @@ type="text/css" href="{% static "css/forms.css" %}"> {% endblock %}
       class="btn btn-sm btn-default"
       >{% trans 'Close' %}</a
     >
-    {% endif %} {% if show_delete_link and original %} {% url
-    opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
+    {% endif %} {% if show_delete_link and original %}
+    {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
     <a
       href="{% add_preserved_filters delete_url %}"
       class="btn btn-sm btn-danger"

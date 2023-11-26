@@ -1,6 +1,7 @@
 import logging
 import multiprocessing
 import os
+import shutil
 from datetime import date
 
 from azure.storage.blob import BlobClient
@@ -49,9 +50,9 @@ def download_cams_data_pol(output_filename, start_date, end_date):
     retriever.retrieve_data(output_filename=output_filename)
 
 
-def main():
-    start_date = "2022-05-01 00:00:00"
-    end_date = "2022-10-01 00:00:00"
+def main(
+    state="local", start_date="2022-05-01 00:00:00", end_date="2022-10-01 00:00:00"
+):
     today = str(date.today()).replace("-", "")
 
     era5_filename_th = f"era5_data_temp_humidity_{today}.nc"
@@ -93,38 +94,83 @@ def main():
         cams_filename_pol,
     ]
     logger.info("Starting migration to blob")
+    if state == "cloud":
+        containerName = "output"
+        for local_file in local_files:
+            upload_to_blob(local_file, containerName)
 
-    connectionString = os.environ.get("BLOB_CONNECTION_STRING")
-    containerName = "output"
-
-    for local_file in local_files:
-        local_file_path = os.path.abspath(local_file)
-
-        # Define the name of the blob in the Azure Blob Storage container
-        output_blob_name = os.path.basename(local_file_path)
-
-        logger.info(f"file is in {output_blob_name}")
         blob = BlobClient.from_connection_string(
             conn_str=connectionString,
             container_name=containerName,
-            blob_name=output_blob_name,
+            blob_name="requirements.txt",
         )
 
         # Upload the local file to Azure Blob Storage
-        with open(local_file_path, "rb") as data:
+        with open("requirements.txt", "rb") as data:
             blob.upload_blob(data, overwrite=True)
-    blob = BlobClient.from_connection_string(
-        conn_str=connectionString,
-        container_name=containerName,
-        blob_name="requirements.txt",
-    )
 
-    # Upload the local file to Azure Blob Storage
-    with open("requirements.txt", "rb") as data:
-        blob.upload_blob(data, overwrite=True)
+    # for local_file in local_files:
+    #     local_file_path = os.path.abspath(local_file)
+    #     if os.path.exists(local_file_path):
+    #         os.remove(local_file_path)
+
+    # connectionString = os.environ.get("BLOB_CONNECTION_STRING")
+    # containerName = "output"
+    #
+    # for local_file in local_files:
+    #     local_file_path = os.path.abspath(local_file)
+    #
+    #     # Define the name of the blob in the Azure Blob Storage container
+    #     output_blob_name = os.path.basename(local_file_path)
+    #
+    #     logger.info(f"file is in {output_blob_name}")
+    #     blob = BlobClient.from_connection_string(
+    #         conn_str=connectionString,
+    #         container_name=containerName,
+    #         blob_name=output_blob_name,
+    #     )
+    #
+    #     # Upload the local file to Azure Blob Storage
+    #     with open(local_file_path, "rb") as data:
+    #         blob.upload_blob(data, overwrite=True)
+    # blob = BlobClient.from_connection_string(
+    #     conn_str=connectionString,
+    #     container_name=containerName,
+    #     blob_name="requirements.txt",
+    # )
+    #
+    # # Upload the local file to Azure Blob Storage
+    # with open("requirements.txt", "rb") as data:
+    #     blob.upload_blob(data, overwrite=True)
     logger.info("Process status: Success")
 
 
+def mover():
+    def move_nc_files(source_directory, target_directory):
+        # Create the target directory if it doesn't exist
+        os.makedirs(target_directory, exist_ok=True)
+
+        # Get the list of files in the source directory
+        files = os.listdir(source_directory)
+        logger.warning(f"-- {source_directory}")
+        logger.warning(f"-- {files}")
+        # Move files with the '.nc' extension to the target directory
+        for filename in files:
+            if filename.endswith(".nc"):
+                source_path = os.path.join(source_directory, filename)
+                target_path = os.path.join(target_directory, filename)
+                shutil.move(source_path, target_path)
+
+    target_directory = os.path.join(os.getcwd(), "data_nc")
+    source_directory = os.getcwd()
+    move_nc_files(source_directory, target_directory)
+
+
 if __name__ == "__main__":
-    main()
+    start_ = "2022-07-11 00:00:00"
+    end_ = "2022-11-15 00:00:00"
+    state = "local"
+    main(state=state, start_date=start_, end_date=end_)
+    if state == "local":
+        mover()
     logger.info("Process status: Success")
