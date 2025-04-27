@@ -1,7 +1,5 @@
 app = "meteodata" # Replace with your app name
 
-
-
 [[services]]
   internal_port = 8000
   protocol = "tcp"

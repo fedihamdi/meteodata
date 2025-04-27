@@ -9,7 +9,7 @@ COPY . /app
 
 # ENV NGROK_AUTHTOKEN=2WlOppnSclFQbpFBerTP7k5k7Pp_6QPqLbDnzadavYb45vbE4
 ENV NGROK_LISTENER_RUNNING=false
-ENV RENDER_EXTERNAL_HOSTNAME=meteodata.fly.dev
+ENV RENDER_EXTERNAL_HOSTNAME=https://meteodata.fly.dev
 ENV DEBUG=TRUE
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -18,7 +18,7 @@ RUN mkdir -p /app/staticfiles
 
 RUN chmod -R 755 /app/staticfiles
 
-RUN python manage.py collectstatic --no-input
+RUN python manage.py collectstatic
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
