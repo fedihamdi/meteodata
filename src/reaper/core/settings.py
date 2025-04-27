@@ -47,14 +47,14 @@ CSRF_TRUSTED_ORIGINS = [
     "https://breatheeasy.azurewebsites.net",
     "https://breatheeasy-764k.onrender.com",
     "https://breatheeasyapp.onrender.com/",
-    "meteodata.fly.dev"
+    "https://meteodata.fly.dev"
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
-    ALLOWED_HOSTS.append("meteodata.fly.dev")
+    ALLOWED_HOSTS.append("https://meteodata.fly.dev")
 
 # Application definition
 
