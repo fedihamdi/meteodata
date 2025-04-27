@@ -31,7 +31,7 @@ if not SECRET_KEY:
     SECRET_KEY = "".join(random.choice(string.ascii_lowercase) for i in range(32))
 
 # Render Deployment Code
-DEBUG = False #"RENDER" not in os.environ
+DEBUG = True #"RENDER" not in os.environ
 
 # Docker HOST
 ALLOWED_HOSTS = ["*"]
@@ -46,14 +46,15 @@ CSRF_TRUSTED_ORIGINS = [
     "http://10.192.19.102:8000",
     "https://breatheeasy.azurewebsites.net",
     "https://breatheeasy-764k.onrender.com",
-    "https://breatheeasyapp.onrender.com/"
+    "https://breatheeasyapp.onrender.com/",
+    "meteodata.fly.dev"
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 else:
-    ALLOWED_HOSTS.append("https://breatheeasyapp.onrender.com/")
+    ALLOWED_HOSTS.append("meteodata.fly.dev")
 
 # Application definition
 
