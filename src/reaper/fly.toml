@@ -1,12 +1,12 @@
-app = "meteodata" # Replace with your app name
+app = "meteodata"
 
 [build]
-  builder = "heroku/buildpacks:common"
+  builder = "heroku/buildpacks:python"
 
 [[services]]
   internal_port = 8000
   protocol = "tcp"
-  
+
   [[services.ports]]
-    port = 80  # External HTTP port
+    port = 80
     handlers = ["http"]
