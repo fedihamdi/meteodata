@@ -1,7 +1,7 @@
-app = "breatheeasyapp" # Replace with your app name
+app = "meteodata" # Replace with your app name
 
 [build]
-  image = "breatheeasyapp" # Ensure it points to your Dockerfile
+  image = "meteodata" # Ensure it points to your Dockerfile
 
 [[services]]
   internal_port = 8000
