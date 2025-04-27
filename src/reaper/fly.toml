@@ -1,18 +1,12 @@
-app = "meteodata" # Replace with your app name
+app = "breatheeasyapp" # Replace with your app name
 
 [build]
-  dockerfile = "Dockerfile" # Ensure it points to your Dockerfile
+  image = "breatheeasyapp" # Ensure it points to your Dockerfile
 
 [[services]]
   internal_port = 8000
-  external_port = 80
-  protocol = "http"
+  protocol = "tcp"
 
-  [services.concurrency]
-    soft_limit = 25
-    hard_limit = 50
-
-  [services.http_checks]
-    grace_period = "30s"
-    interval = "15s"
-    timeout = "15s"
+  [[services.ports]]
+    port = 80  # External HTTP port
+    handlers = ["http"]
