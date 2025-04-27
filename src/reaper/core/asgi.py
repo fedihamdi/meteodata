@@ -20,7 +20,7 @@ application = get_asgi_application()
 # this asgi.py as the entry point.
 # Set env variable to protect against the gunicorn autoreloader.
 if os.getenv("NGROK_LISTENER_RUNNING") is None:
-    os.environ["NGROK_LISTENER_RUNNING"] = "true"
+    os.environ["NGROK_LISTENER_RUNNING"] = "false"
     import asyncio
 
     import ngrok
