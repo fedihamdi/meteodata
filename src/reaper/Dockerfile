@@ -9,8 +9,8 @@ COPY . /app
 
 # ENV NGROK_AUTHTOKEN=2WlOppnSclFQbpFBerTP7k5k7Pp_6QPqLbDnzadavYb45vbE4
 ENV NGROK_LISTENER_RUNNING=false
-ENV RENDER_EXTERNAL_HOSTNAME=https://breatheeasyapp.onrender.com/
-ENV DEBUG=False
+ENV RENDER_EXTERNAL_HOSTNAME=meteodata.fly.dev
+ENV DEBUG=TRUE
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
