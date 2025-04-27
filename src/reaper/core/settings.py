@@ -31,7 +31,7 @@ if not SECRET_KEY:
     SECRET_KEY = "".join(random.choice(string.ascii_lowercase) for i in range(32))
 
 # Render Deployment Code
-DEBUG = "RENDER" not in os.environ
+DEBUG = False #"RENDER" not in os.environ
 
 # Docker HOST
 ALLOWED_HOSTS = ["*"]
@@ -46,11 +46,14 @@ CSRF_TRUSTED_ORIGINS = [
     "http://10.192.19.102:8000",
     "https://breatheeasy.azurewebsites.net",
     "https://breatheeasy-764k.onrender.com",
+    "https://breatheeasyapp.onrender.com/"
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+else:
+    ALLOWED_HOSTS.append("https://breatheeasyapp.onrender.com/")
 
 # Application definition
 
@@ -175,8 +178,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-# if not DEBUG:
-#    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if not DEBUG:
+   STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

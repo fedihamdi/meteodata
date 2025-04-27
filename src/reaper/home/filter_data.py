@@ -19,9 +19,9 @@ def filter_data_user_position(only_data=False):
         geocoder.ip("me")
         # if g.latlng is None :
         user_latitude, user_longitude = [
-            48.821216,
-            2.233681,
-        ]  # montreuil:[48.8534, 2.4488]
+            48.8534,
+            2.4488
+        ]  # montreuil:[48.8534, 2.4488] # Boul: 48.821216,2.233681,
         # else :
         # user_latitude, user_longitude = g.latlng
         filtered_df = df[

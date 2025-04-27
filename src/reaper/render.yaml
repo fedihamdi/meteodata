@@ -3,13 +3,13 @@ services:
     name: django-material-dash2
     plan: starter
     env: python
-    region: frankfurt # region should be same as your database region.
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn core.wsgi:application"
+    region: frankfurt  # Utilise la même région que ta base de données
+    buildCommand: "./build.sh"  # Exécute ton script de build
+    startCommand: "gunicorn core.wsgi:application --bind 0.0.0.0:8000"  # Démarre le serveur Gunicorn
     envVars:
       - key: DEBUG
         value: False
       - key: SECRET_KEY
-        generateValue: true
+        generateValue: true  # Génère une clé secrète
       - key: WEB_CONCURRENCY
-        value: 4
+        value: 1  # Limite le nombre de workers pour éviter le problème de mémoire
