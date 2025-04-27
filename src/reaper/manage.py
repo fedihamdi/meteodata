@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    if os.getenv("NGROK_LISTENER_RUNNING") is None:
+    if not os.getenv("NGROK_LISTENER_RUNNING") is None:
         os.environ["NGROK_LISTENER_RUNNING"] = "true"
         import asyncio
 

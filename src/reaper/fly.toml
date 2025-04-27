@@ -1,12 +1,33 @@
-app = "meteodata"
+# fly.toml app configuration file generated for reaper on 2025-04-27T08:04:57+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'meteodata'
+primary_region = 'cdg'
+console_command = '/code/manage.py shell'
 
 [build]
-  builder = "heroku/buildpacks:python"
 
-[[services]]
+[deploy]
+  release_command = 'python manage.py migrate --noinput'
+
+[env]
+  PORT = '8000'
+
+[http_service]
   internal_port = 8000
-  protocol = "tcp"
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
 
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
+[[vm]]
+  memory = '2gb'
+  cpu_kind = 'shared'
+  cpus = 2
+
+[[statics]]
+  guest_path = '/code/static'
+  url_prefix = '/static/'
